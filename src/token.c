@@ -15,6 +15,10 @@ tokenTypeToString (tokenType type)
             return "TOKEN_OPEN_BRACE";
         case TOKEN_CLOSE_BRACE:
             return "TOKEN_CLOSE_BRACE";
+        case TOKEN_OPEN_SQUARE_BRACE:
+            return "TOKEN_OPEN_SQUARE_BRACE";
+        case TOKEN_CLOSED_SQUARE_BRACE:
+            return "TOKEN_CLOSED_SQUARE_BRACE";
         case TOKEN_ADD:
             return "TOKEN_ADD";
         case TOKEN_SUBTRACT:
@@ -27,6 +31,8 @@ tokenTypeToString (tokenType type)
             return "TOKEN_MINUS";
         case TOKEN_BYTE:
             return "TOKEN_BYTE";
+        case TOKEN_ARRAY:
+            return "TOKEN_ARRAY";
         case TOKEN_PUTCHAR:
             return "TOKEN_PUTCHAR";
         case TOKEN_WHILE:

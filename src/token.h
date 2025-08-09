@@ -8,6 +8,8 @@ typedef enum
     TOKEN_SEMICOLON,
     TOKEN_OPEN_BRACE,
     TOKEN_CLOSE_BRACE,
+    TOKEN_OPEN_SQUARE_BRACE,
+    TOKEN_CLOSED_SQUARE_BRACE,
     // math related and operators
     TOKEN_ADD,      //++
     TOKEN_SUBTRACT, //--
@@ -16,6 +18,7 @@ typedef enum
     TOKEN_MINUS,
     // keywords
     TOKEN_BYTE,
+    TOKEN_ARRAY,
     TOKEN_PUTCHAR,
     TOKEN_WHILE,
     // literals

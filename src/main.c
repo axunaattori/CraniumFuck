@@ -2,16 +2,16 @@
 #include "token.h"
 #include <stdio.h>
 
-char source[2048] = "\n\
-    byte a = 0;\n\
-    byte b = 255;\n\
-    byte String = \"hello, new line example: \\n, quote inside quote example: \\\" \\\'\"\n\
-    while (b)\n\
-    {\n\
-        putchar(a);\n\
-        a++;\n\
-        b--;\n\
-    }";
+char source[2048] = "byte a = 0;\n"
+                    "byte b = 255;\n"
+                    "array String[64] = \"hello, new line example: \\n, quote "
+                    "inside quote example: \\\" \\\'\"\n"
+                    "while (b)\n"
+                    "{\n"
+                    "    putchar(a);\n"
+                    "    a++;\n"
+                    "    b--;\n"
+                    "}";
 
 /*  somewhat what the compiled result should look like:
  *
@@ -27,7 +27,7 @@ char source[2048] = "\n\
 int
 main ()
 {
-    printf ("CLBFC compiled at %s %s\n", __DATE__, __TIME__);
+    printf ("CF compiled at %s %s\n", __DATE__, __TIME__);
     Token *tokens = lexer (source, sizeof (source));
 
     if (tokens == NULL)
