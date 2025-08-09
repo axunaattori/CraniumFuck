@@ -72,12 +72,12 @@ lexer (char *src, uint32_t length)
                     break;
                 case '[':
                     tokens[token_count++] = (Token){ TOKEN_OPEN_SQUARE_BRACE,
-                                                     "{", line, column };
+                                                     "[", line, column };
                     column++;
                     break;
                 case ']':
                     tokens[token_count++] = (Token){ TOKEN_CLOSED_SQUARE_BRACE,
-                                                     "}", line, column };
+                                                     "]", line, column };
                     column++;
                     break;
                 case ';':
