@@ -17,31 +17,30 @@ char source[2048] = "\n\
  *
  *     byte a;             (cell 0)
  * >-  byte b; (underflow) (cell 1)
- * [   while 
+ * [   while
  *   <. putchar(a);
  *   +  a++;
  *   >-  b--; and (b)
  * ]   }
-    */
+ */
 
-int main()
+int
+main ()
 {
-    printf("CLBFC compiled at %s %s\n", __DATE__, __TIME__);
-    Token *tokens = lexer(source, sizeof(source));
+    printf ("CLBFC compiled at %s %s\n", __DATE__, __TIME__);
+    Token *tokens = lexer (source, sizeof (source));
 
-    if(tokens == NULL)
-    {
-        return 1;
-    }
+    if (tokens == NULL)
+        {
+            return 1;
+        }
 
-    for(int i = 0; tokens[i].type != TOKEN_EOF; i++)
-    {
-        printf("type = %s, lexeme = %s, line = %d, column = %d\n",
-               tokenTypeToString(tokens[i].type),
-               tokens[i].lexeme,
-               tokens[i].line,
-               tokens[i].column);
-    }
+    for (int i = 0; tokens[i].type != TOKEN_EOF; i++)
+        {
+            printf ("type = %s, lexeme = %s, line = %d, column = %d\n",
+                    tokenTypeToString (tokens[i].type), tokens[i].lexeme,
+                    tokens[i].line, tokens[i].column);
+        }
 
     return 0;
 }

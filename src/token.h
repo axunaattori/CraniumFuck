@@ -1,6 +1,6 @@
 #pragma once
 
-typedef enum 
+typedef enum
 {
     // separator
     TOKEN_OPEN_PARENTHESIS,
@@ -9,7 +9,7 @@ typedef enum
     TOKEN_OPEN_BRACE,
     TOKEN_CLOSE_BRACE,
     // math related and operators
-    TOKEN_ADD, //++
+    TOKEN_ADD,      //++
     TOKEN_SUBTRACT, //--
     TOKEN_EQUALS,
     TOKEN_PLUS,
@@ -23,9 +23,8 @@ typedef enum
     TOKEN_IDENTIFIER,
     TOKEN_STRING,
     // extra
-    TOKEN_EOF //end of file
+    TOKEN_EOF // end of file
 } tokenType;
-
 
 typedef struct
 {
@@ -35,4 +34,4 @@ typedef struct
     int column;
 } Token;
 
-const char *tokenTypeToString(tokenType type); 
+const char *tokenTypeToString (tokenType type);

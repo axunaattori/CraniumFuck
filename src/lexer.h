@@ -1,6 +1,6 @@
 #pragma once
-#include <stdint.h>
 #include "token.h"
+#include <stdint.h>
 
-char escape(char c);
-Token* lexer(char *src, uint32_t length);
+char escape (char c);
+Token *lexer (char *src, uint32_t length);
