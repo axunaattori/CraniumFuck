@@ -139,7 +139,6 @@ lexer (char *src, uint32_t length)
                         {
                             while ((src[i]) == '_' || isalpha (src[i]))
                                 {
-                                    printf ("%d %d %c\n", i, column, src[i]);
                                     i++;
                                     column++;
                                     if (i >= length)
@@ -158,7 +157,6 @@ lexer (char *src, uint32_t length)
                                             return NULL;
                                         }
                                 }
-                            printf ("%d %d %c\n", i, column, src[i]);
 
                             i--; // adjust
 
@@ -219,7 +217,6 @@ lexer (char *src, uint32_t length)
                         {
                             while (isdigit (src[i]))
                                 {
-                                    printf ("%d %d %c\n", i, column, src[i]);
                                     i++;
                                     column++;
                                     if (i >= length)
@@ -238,7 +235,6 @@ lexer (char *src, uint32_t length)
                                             return NULL;
                                         }
                                 }
-                            printf ("%d %d %c\n", i, column, src[i]);
 
                             i--; // adjust
 
