@@ -5,8 +5,6 @@
 #include <stdio.h>
 
 char source[2048] = "#define hello test long long\n"
-                    "#warning hello test\n"
-                    "#error LOL\n"
                     "byte a = 0;\n"
                     "byte b = 255;\n"
                     "byte String[64] = \"hello, new line example: \\n, quote "

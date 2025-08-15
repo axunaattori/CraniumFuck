@@ -9,6 +9,8 @@
 
 #include "token.h"
 
+// to the person reading this: make this better if you want.
+
 Token *
 lexer (char *src, uint32_t length)
 {

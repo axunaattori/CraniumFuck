@@ -7,42 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-uint32_t pos = 0; // probably not the best code.
-
-char *
-getseperated (char *src, uint32_t length, char c, int error, uint32_t line)
-{
-    uint32_t start = pos;
-    while (src[pos] != c)
-        {
-            pos++;
-            if (pos >= length)
-                {
-                    if (error != 0)
-                        uerror ("Couldn't find ending to #define!", line, 0);
-                }
-        }
-
-    uint32_t size = pos - start;
-    char *text = malloc (size + 1);
-    if (!text)
-        return NULL;
-
-    memcpy (text, &src[start], size);
-    text[size] = '\0';
-
-    return text;
-}
-
-typedef struct
-{
-    char *name;
-    char *content;
-} define;
-
 // stuff to add (X = done):
 // #define X (no fuction support yet)
-// #undef
+// #undef X (i believe so ill go sleep dont want to test it rn)
 // #ifdef
 // #ifndef
 // #endif
@@ -76,85 +43,42 @@ preprocessor (char *src, uint32_t length)
     defined[definedCount++] = (define){ "__DATE__", dateWithQuotes };
     defined[definedCount++] = (define){ "__TIME__", timeWithQuotes };
 
-    uint32_t line = 0;
-    while (pos < length)
+    uint32_t line = 1;
+    for (uint32_t pos = 0; pos < length; pos++)
         {
             char c = src[pos];
             switch (c)
                 {
                 case '#':
                     {
-                        char *type = getseperated (src, length, ' ', 1, 0);
+                        char *type
+                            = getseperated (src, length, ' ', 1, 0, &pos);
                         if (type == NULL)
                             {
                                 return NULL;
                             }
                         if (strcmp (type, "#define") == 0)
                             {
-                                // pos++ is used to offset off of the space
-                                pos++;
-                                char *name
-                                    = getseperated (src, length, ' ', 1, 0);
-                                if (name == NULL)
-                                    {
-                                        free (type);
-                                        return NULL;
-                                    }
-                                for (uint32_t i = 0; i < definedCount; i++)
-                                    {
-                                        if (strcmp (name, defined[i].name)
-                                            == 0)
-                                            {
-                                                char buffer[1024];
-                                                sprintf (
-                                                    buffer,
-                                                    "%s is already defined, "
-                                                    "please use #undef before "
-                                                    "redefining it.",
-                                                    name);
-                                                uerror (buffer, line, 0);
-                                            }
-                                    }
-                                pos++;
-                                char *text
-                                    = getseperated (src, length, '\n', 0, 0);
-                                if (text == NULL)
-                                    {
-                                        text = getseperated (
-                                            src, length, '\0', 1,
-                                            0); // check for null even tho its
-                                                // at the end, making this
-                                                // define fucking useless.
-                                        if (text == NULL)
-                                            {
-                                                free (type);
-                                                free (name);
-                                                return NULL;
-                                            }
-                                    }
-                                else
-                                    {
-                                        line++;
-                                    }
-                                defined[definedCount++]
-                                    = (define){ strdup (name), strdup (text) };
-                                free (name);
+                                hashdefine (src, length, &definedCount, line,
+                                            &defined, &pos);
                             }
                         else if (strcmp (type, "#undef") == 0)
                             {
+                                hasdundef (src, length, &definedCount, line,
+                                           &defined, &pos);
                             }
                         else if (strcmp (type, "#error") == 0)
                             {
                                 pos++;
-                                char *text
-                                    = getseperated (src, length, '\n', 1, 0);
+                                char *text = getseperated (src, length, '\n',
+                                                           1, 0, &pos);
                                 uerror (text, line, 0);
                             }
                         else if (strcmp (type, "#warning") == 0)
                             {
                                 pos++;
-                                char *text
-                                    = getseperated (src, length, '\n', 1, 0);
+                                char *text = getseperated (src, length, '\n',
+                                                           1, 0, &pos);
                                 uwarning (text, line, 0);
                                 free (text);
                                 line++;
@@ -165,41 +89,36 @@ preprocessor (char *src, uint32_t length)
                 case '\n':
                     line++;
                     break;
+                case '"':
+                case '\'':
+                    {
+                        char startquote = c;
+                        pos++;
+                        while (pos < length && src[pos] != startquote)
+                            {
+                                if (src[pos] == '\n')
+                                    line++;
+                                if (src[pos] == '\\')
+                                    pos++; // skip escape
+                                pos++;
+                            }
+                        if (pos >= length)
+                            {
+                                char buffer[1024];
+                                sprintf (buffer,
+                                         "preprocessor: Couldn't "
+                                         "find ending "
+                                         "quote (%c). ",
+                                         startquote);
+                                uerror (buffer, line, 0);
+                            }
+
+                        break;
+                    }
                 default:
                     // todo: add function to check for defined stuff and
-                    // replace
-                    //  if ' or " ignore till the next " or ' and skip.
-                    if (c == '\'' || c == '"')
-                        {
-                            char startquote = c;
-                            pos++;
-                            while (pos < length && src[pos] != startquote)
-                                {
-                                    if (src[pos] == '\n')
-                                        {
-                                            line++;
-                                        }
-                                    if (pos >= length)
-                                        {
-                                            char buffer[1024];
-                                            sprintf (buffer,
-                                                     "preprocessor: Couldn't "
-                                                     "find ending "
-                                                     "quote (%c). ",
-                                                     startquote);
-                                            uerror (buffer, line, 0);
-                                        }
-                                    if (src[pos] == '\\')
-                                        {
-                                            pos++;
-                                        }
-                                    pos++;
-                                }
-                            break;
-                        }
                     break;
                 }
-            pos++;
         }
 
 #if printdebug

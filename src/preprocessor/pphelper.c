@@ -1,6 +1,37 @@
 #include "pphelper.h"
+#include "preprocessor/preprocessor.h"
+#include "util/error.h"
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
+
+char *
+getseperated (char *src, uint32_t length, char c, int error, uint32_t line,
+              uint32_t *pos)
+{
+    uint32_t start = *pos;
+    while (src[*pos] != c)
+        {
+            (*pos)++;
+            if (*pos >= length)
+                {
+                    if (error != 0)
+                        uerror ("Couldn't find ending to #define!", line, 0);
+                }
+        }
+
+    uint32_t size = *pos - start;
+    char *text = malloc (size + 1);
+    if (!text)
+        return NULL;
+
+    memcpy (text, &src[start], size);
+    text[size] = '\0';
+
+    return text;
+}
 
 char *
 pptime ()
@@ -32,4 +63,88 @@ ppdate ()
               tm.tm_year + 1900);
 
     return date;
+}
+
+void
+hashdefine (char *src, uint32_t length, uint32_t *definedCount, uint32_t line,
+            define **defined, uint32_t *pos)
+{
+    (*pos)++; // move past the space
+    char *name = getseperated (src, length, ' ', 1, 0, pos);
+    if (!name)
+        uerror ("missing identifier for #define", line, 0);
+
+    for (uint32_t i = 0; i < *definedCount; i++)
+        {
+            if (strcmp (name, (*defined)[i].name) == 0)
+                {
+                    char buffer[1024];
+                    sprintf (buffer,
+                             "%s is already defined, use #undef first.", name);
+                    uerror (buffer, line, 0);
+                }
+        }
+
+    (*pos)++;
+    char *text = getseperated (src, length, '\n', 0, 0, pos);
+    if (!text)
+        {
+            text = getseperated (
+                src, length, '\0', 1, 0,
+                pos); // check for null even tho its // at the end, making this
+                      // // define fucking useless.
+            if (!text)
+                {
+                    free (name);
+                    uerror ("missing text", line, 0);
+                }
+        }
+    else
+        {
+            line++;
+        }
+
+    (*defined)[*definedCount].name = strdup (name);
+    (*defined)[*definedCount].content = strdup (text);
+    (*definedCount)++;
+
+    free (name);
+    if (text)
+        free (text);
+}
+
+void
+hasdundef (char *src, uint32_t length, uint32_t *definedCount, uint32_t line,
+           define **defined, uint32_t *pos)
+{
+    (*pos)++; // move past the space
+    char *name = getseperated (src, length, '\n', 0, 0, pos);
+    if (!name)
+        {
+            name = getseperated (
+                src, length, '\0', 1, 0,
+                pos); // check for null even tho its // at the end, making this
+                      // // define fucking useless.
+            if (!name)
+                {
+                    uerror ("You didn't tell what to undef.", line, 0);
+                }
+        }
+
+    for (uint32_t i = 0; i < *definedCount; i++)
+        {
+            if (strcmp (name, (*defined)[i].name) == 0)
+                {
+                    free ((*defined)[i].name);
+                    free ((*defined)[i].content);
+
+                    for (uint32_t j = i; j < *definedCount - 1; j++)
+                        {
+                            (*defined)[j] = (*defined)[j + 1];
+                        }
+
+                    (*definedCount)--;
+                    break;
+                }
+        }
 }
