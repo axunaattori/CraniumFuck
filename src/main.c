@@ -1,21 +1,22 @@
 #include "config.h"
-#include "lexer.h"
-#include "preprocessor.h"
-#include "token.h"
+#include "lexer/lexer.h"
+#include "lexer/token.h"
+#include "preprocessor/preprocessor.h"
 #include <stdio.h>
 
-char source[2048]
-    = "#define hello test\n" // should be removed by the preprocessor!
-      "byte a = 0;\n"
-      "byte b = 255;\n"
-      "byte String[64] = \"hello, new line example: \\n, quote "
-      "inside quote example: \\\" \\\'\"\n"
-      "while (b)\n"
-      "{\n"
-      "    putchar(a);\n"
-      "    a++;\n"
-      "    b--;\n"
-      "}\n";
+char source[2048] = "#define hello test long long\n"
+                    "#warning hello test\n"
+                    "#error LOL\n"
+                    "byte a = 0;\n"
+                    "byte b = 255;\n"
+                    "byte String[64] = \"hello, new line example: \\n, quote "
+                    "inside quote example: \\\" \\\'\"\n"
+                    "while (b)\n"
+                    "{\n"
+                    "    putchar(a);\n"
+                    "    a++;\n"
+                    "    b--;\n"
+                    "}\n";
 
 /*  somewhat what the compiled result should look like:
  *
@@ -35,6 +36,7 @@ main ()
     char *Newsrc = preprocessor (source, sizeof (source));
     if (Newsrc == NULL)
         {
+            printf ("preprocessor: Build failed");
             return 1;
         }
 
@@ -44,6 +46,7 @@ main ()
 
     if (tokens == NULL)
         {
+            printf ("Lexer: Build failed");
             return 1;
         }
 
@@ -57,5 +60,6 @@ main ()
 #endif
     printf ("Lexering Done!\n");
 
+    printf ("Done building.");
     return 0;
 }

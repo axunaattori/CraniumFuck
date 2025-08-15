@@ -1,5 +1,6 @@
 #include "lexer.h"
-#include "helper.h"
+#include "util/error.h"
+#include "util/helper.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -122,18 +123,8 @@ lexer (char *src, uint32_t length)
                                     column++;
                                     if (i >= length)
                                         {
-                                            printf ("Couldn't find ending"
-                                                    ", problematic"
-                                                    " Code starts at "
-                                                    "column : "
-                                                    "%d, line: %d\n",
-                                                    startcolumn, line);
-                                            printf (
-                                                "This most likely isn't"
-                                                "your code's problem, as this "
-                                                "should be impossible"
-                                                " to my knowledge.\n");
-                                            return NULL;
+                                            uerror ("Couldn't find ending.",
+                                                    line, column);
                                         }
                                 }
 
@@ -143,8 +134,7 @@ lexer (char *src, uint32_t length)
                             char *lexeme = malloc (leng + 1);
                             if (!lexeme)
                                 {
-                                    printf ("Memory error\n");
-                                    return NULL;
+                                    uerror ("Memory Error", line, column);
                                 }
                             strncpy (lexeme, &src[start], leng);
                             lexeme[leng] = '\0';
@@ -207,19 +197,9 @@ lexer (char *src, uint32_t length)
                                     column++;
                                     if (i >= length)
                                         {
-                                            printf ("Couldn't find ending "
-                                                    "(number), problematic"
-                                                    " Couldne starts at "
-                                                    "column : "
-                                                    "%d, line: %d\n",
-                                                    startcolumn, line);
-                                            printf ("This most likely "
-                                                    "isn't"
-                                                    "your code's problem, "
-                                                    "as this "
-                                                    "should be impossible"
-                                                    " to my knowledge.\n");
-                                            return NULL;
+                                            uerror ("Couldn't find ending "
+                                                    "(number).",
+                                                    line, column);
                                         }
                                 }
 
@@ -229,8 +209,7 @@ lexer (char *src, uint32_t length)
                             char *lexeme = malloc (leng + 1);
                             if (!lexeme)
                                 {
-                                    printf ("Memory error\n");
-                                    return NULL;
+                                    uerror ("Memory Error", line, column);
                                 }
                             strncpy (lexeme, &src[start], leng);
                             lexeme[leng] = '\0';
@@ -249,8 +228,7 @@ lexer (char *src, uint32_t length)
                             char *strarray = malloc (arraysize);
                             if (!strarray)
                                 {
-                                    printf ("Memory error\n");
-                                    return NULL;
+                                    uerror ("Memory Error", line, column);
                                 }
                             i++; // skip opening quote
                             column++;
@@ -269,17 +247,10 @@ lexer (char *src, uint32_t length)
                                             column++;
                                             if (i >= length)
                                                 {
-                                                    printf ("Escape "
-                                                            "character at "
-                                                            "end of "
-                                                            "input. "
-                                                            "Problem at "
-                                                            "column: "
-                                                            "%d, line: "
-                                                            "%d\n",
-                                                            startcolumn, line);
                                                     free (strarray);
-                                                    return NULL;
+                                                    uerror ("Escape character "
+                                                            "at end of input.",
+                                                            line, column);
                                                 }
                                             char escaped = escape (src[i]);
                                             if (len >= arraysize - 1)
@@ -289,12 +260,10 @@ lexer (char *src, uint32_t length)
                                                         strarray, arraysize);
                                                     if (!temp)
                                                         {
-                                                            printf ("Memor"
-                                                                    "y "
-                                                                    "error"
-                                                                    "\n");
                                                             free (strarray);
-                                                            return NULL;
+                                                            uerror (
+                                                                "Memory Error",
+                                                                line, column);
                                                         }
                                                     strarray = temp;
                                                 }
@@ -310,10 +279,9 @@ lexer (char *src, uint32_t length)
                                                                   arraysize);
                                             if (!temp)
                                                 {
-                                                    printf ("Memory "
-                                                            "error\n");
                                                     free (strarray);
-                                                    return NULL;
+                                                    uerror ("Memory Error",
+                                                            line, column);
                                                 }
                                             strarray = temp;
                                         }
@@ -323,13 +291,15 @@ lexer (char *src, uint32_t length)
                                 }
                             if (i >= length || src[i] != startquote)
                                 {
-                                    printf ("Lexer: Couldn't find ending "
-                                            "quote (%c). "
-                                            "Problem at column: %d, "
-                                            "line: %d\n",
-                                            startquote, startcolumn, line);
                                     free (strarray);
-                                    return NULL;
+                                    char buffer[1024];
+                                    sprintf (buffer,
+                                             "Lexer: Couldn't find "
+                                             "ending quote (%c)",
+                                             startquote);
+                                    uerror ("Lexer: Couldn't find ending "
+                                            "quote (%c)",
+                                            line, column);
                                 }
                             strarray[len] = '\0';
                             tokens[token_count++]
