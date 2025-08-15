@@ -7,6 +7,3 @@ cd build
 cmake ..
 make
 ```
-
-```
-```
