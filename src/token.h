@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TOKEN_H
+#define TOKEN_H
 
 typedef enum
 {
@@ -10,6 +11,7 @@ typedef enum
     TOKEN_CLOSE_BRACE,
     TOKEN_OPEN_SQUARE_BRACE,
     TOKEN_CLOSED_SQUARE_BRACE,
+    TOKEN_COMMA,
     // math related and operators
     TOKEN_ADD,      //++
     TOKEN_SUBTRACT, //--
@@ -18,9 +20,11 @@ typedef enum
     TOKEN_MINUS,
     // keywords
     TOKEN_BYTE,
-    TOKEN_ARRAY,
     TOKEN_PUTCHAR,
     TOKEN_WHILE,
+    TOKEN_VOID,
+    TOKEN_RETURN,
+    TOKEN_IF,
     // literals
     TOKEN_NUMBER,
     TOKEN_IDENTIFIER,
@@ -38,3 +42,5 @@ typedef struct
 } Token;
 
 const char *tokenTypeToString (tokenType type);
+
+#endif
