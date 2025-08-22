@@ -10,6 +10,7 @@
 #include "token.h"
 
 // to the person reading this: make this better if you want.
+// mainly the default: sucks.
 
 Token *
 lexer (char *src, uint32_t length)
@@ -180,6 +181,13 @@ lexer (char *src, uint32_t length)
                                 {
                                     tokens[token_count++]
                                         = (Token){ TOKEN_RETURN, lexeme, line,
+                                                   startcolumn };
+                                    break;
+                                }
+                            else if (strcmp (lexeme, "main") == 0)
+                                {
+                                    tokens[token_count++]
+                                        = (Token){ TOKEN_MAIN, lexeme, line,
                                                    startcolumn };
                                     break;
                                 }

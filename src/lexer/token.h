@@ -30,7 +30,8 @@ typedef enum
     TOKEN_IDENTIFIER,
     TOKEN_STRING,
     // extra
-    TOKEN_EOF // end of file
+    TOKEN_EOF, // end of file
+    TOKEN_MAIN // start, like in c.
 } tokenType;
 
 typedef struct

@@ -7,42 +7,48 @@
 #include <stdlib.h>
 #include <string.h>
 
-// stuff to add (X = done):
-// #define X (no fuction support yet)
-// #undef X (i believe so ill go sleep dont want to test it rn)
+// TODO:
+// (X = done):
+// #define
+// #undef
 // #ifdef
 // #ifndef
 // #endif
 // #else
 // #elif
 // #include
-// #error X
-// #warning X
+// #error
+// #warning
 
 // default
-// __ARRAYSIZE__ 30000
+// __ARRAYSIZE__
 // __TIME__
 // __DATE__
+// __VERSION__
 
 char *
 preprocessor (char *src, uint32_t length)
 {
-    define *defined = malloc ((length + 1) * sizeof (define));
+    define *defined = malloc (256 * sizeof (define));
     if (!defined)
         return NULL;
 
     uint32_t definedCount = 0;
 
-    defined[definedCount++] = (define){ "__ARRAYSIZE__", "\"30000\"" };
+    defined[definedCount++] = (define){ "__ARRAYSIZE__", ArraySize };
 
     static char dateWithQuotes[20];
     sprintf (dateWithQuotes, "\"%s\"", ppdate ());
     static char timeWithQuotes[20];
     sprintf (timeWithQuotes, "\"%s\"", pptime ());
+    static char versionWithQuotes[20];
+    sprintf (versionWithQuotes, "\"%s\"", ppversion ());
 
     defined[definedCount++] = (define){ "__DATE__", dateWithQuotes };
     defined[definedCount++] = (define){ "__TIME__", timeWithQuotes };
+    defined[definedCount++] = (define){ "__VERSION__", versionWithQuotes };
 
+    uint32_t column = 1;
     uint32_t line = 1;
     for (uint32_t pos = 0; pos < length; pos++)
         {
@@ -51,43 +57,11 @@ preprocessor (char *src, uint32_t length)
                 {
                 case '#':
                     {
-                        char *type
-                            = getseperated (src, length, ' ', 1, 0, &pos);
-                        if (type == NULL)
-                            {
-                                return NULL;
-                            }
-                        if (strcmp (type, "#define") == 0)
-                            {
-                                hashdefine (src, length, &definedCount, line,
-                                            &defined, &pos);
-                            }
-                        else if (strcmp (type, "#undef") == 0)
-                            {
-                                hasdundef (src, length, &definedCount, line,
-                                           &defined, &pos);
-                            }
-                        else if (strcmp (type, "#error") == 0)
-                            {
-                                pos++;
-                                char *text = getseperated (src, length, '\n',
-                                                           1, 0, &pos);
-                                uerror (text, line, 0);
-                            }
-                        else if (strcmp (type, "#warning") == 0)
-                            {
-                                pos++;
-                                char *text = getseperated (src, length, '\n',
-                                                           1, 0, &pos);
-                                uwarning (text, line, 0);
-                                free (text);
-                                line++;
-                            }
-                        free (type);
-                        break;
+                        // planning to rewrite this
                     }
                 case '\n':
                     line++;
+                    column = 1;
                     break;
                 case '"':
                 case '\'':
@@ -97,7 +71,14 @@ preprocessor (char *src, uint32_t length)
                         while (pos < length && src[pos] != startquote)
                             {
                                 if (src[pos] == '\n')
-                                    line++;
+                                    {
+                                        line++;
+                                        column = 0;
+                                    }
+                                else
+                                    {
+                                        column++;
+                                    }
                                 if (src[pos] == '\\')
                                     pos++; // skip escape
                                 pos++;
@@ -105,20 +86,22 @@ preprocessor (char *src, uint32_t length)
                         if (pos >= length)
                             {
                                 char buffer[1024];
-                                sprintf (buffer,
-                                         "preprocessor: Couldn't "
-                                         "find ending "
-                                         "quote (%c). ",
-                                         startquote);
-                                uerror (buffer, line, 0);
+                                snprintf (buffer, sizeof (buffer),
+                                          "preprocessor: Couldn't "
+                                          "find ending "
+                                          "quote (%c). ",
+                                          startquote);
+                                uerror (buffer, line, column);
                             }
 
                         break;
                     }
                 default:
-                    // todo: add function to check for defined stuff and
+                    // TODO: add function to check for defined stuff and expand
+                    // them
                     break;
                 }
+            column++;
         }
 
 #if printdebug
@@ -130,5 +113,6 @@ preprocessor (char *src, uint32_t length)
         }
 #endif
     free (defined);
-    return "example";
+    return "example"; // TODO: actually preprocess this and return the
+                      // processed thing
 }

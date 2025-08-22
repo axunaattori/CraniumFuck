@@ -51,6 +51,8 @@ tokenTypeToString (tokenType type)
             return "TOKEN_STRING";
         case TOKEN_EOF:
             return "TOKEN_EOF";
+        case TOKEN_MAIN:
+            return "TOKEN_MAIN";
         default:
             return "UNKNOWN";
         }

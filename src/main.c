@@ -2,19 +2,24 @@
 #include "lexer/lexer.h"
 #include "lexer/token.h"
 #include "preprocessor/preprocessor.h"
+#include "version.h"
 #include <stdio.h>
+#include <string.h>
 
-char source[2048] = "#define hello test long long\n"
-                    "byte a = 0;\n"
-                    "byte b = 255;\n"
-                    "byte String[64] = \"hello, new line example: \\n, quote "
-                    "inside quote example: \\\" \\\'\"\n"
-                    "while (b)\n"
-                    "{\n"
-                    "    putchar(a);\n"
-                    "    a++;\n"
-                    "    b--;\n"
-                    "}\n";
+char source[2048]
+    = "void main()"
+      "  {"
+      "  byte a = 0;\n"
+      "  byte b = 255;\n"
+      "  byte String[64] = \"hello, new line example: \\n, quote "
+      "  inside quote example: \\\" \\\'\"\n"
+      "  while (b)\n"
+      "  {\n"
+      "    putchar(a);\n"
+      "    a++;\n"
+      "    b--;\n"
+      "  }\n"
+      "}";
 
 /*  somewhat what the compiled result should look like:
  *
@@ -27,11 +32,21 @@ char source[2048] = "#define hello test long long\n"
  * ]   }
  */
 
+// in case if the user isnt using cmake.
+#ifndef CMAKE_COMPILER_NAME
+#define CMAKE_COMPILER_NAME "Unknown"
+#endif
+#ifndef CMAKE_COMPILER_VERSION
+#define CMAKE_COMPILER_VERSION "Unknown"
+#endif
+
 int
-main ()
+main (int argc, char *argv[])
 {
-    printf ("CF compiled at %s %s\n", __DATE__, __TIME__);
-    char *Newsrc = preprocessor (source, sizeof (source));
+    printf ("CF %d.%d compiled at %s %s, with %s %s\n", VERSION_MAJOR,
+            VERSION_MINOR, __DATE__, __TIME__, CMAKE_COMPILER_NAME,
+            CMAKE_COMPILER_VERSION);
+    char *Newsrc = preprocessor (source, strlen (source));
     if (Newsrc == NULL)
         {
             printf ("preprocessor: Build failed");
@@ -40,7 +55,7 @@ main ()
 
     printf ("Preprocessing Done!\n");
 
-    Token *tokens = lexer (source, sizeof (source));
+    Token *tokens = lexer (source, strlen (source));
 
     if (tokens == NULL)
         {
@@ -59,5 +74,6 @@ main ()
     printf ("Lexering Done!\n");
 
     printf ("Done building.");
+
     return 0;
 }
