@@ -1,58 +1,72 @@
 #include "token.h"
 
+#define CASE(token)                                                           \
+    case token:                                                               \
+        return #token;
+
 const char *
 tokenTypeToString (tokenType type)
 {
     switch (type)
         {
-        case TOKEN_OPEN_PARENTHESIS:
-            return "TOKEN_OPEN_PARENTHESIS";
-        case TOKEN_CLOSE_PARENTHESIS:
-            return "TOKEN_CLOSE_PARENTHESIS";
-        case TOKEN_SEMICOLON:
-            return "TOKEN_SEMICOLON";
-        case TOKEN_OPEN_BRACE:
-            return "TOKEN_OPEN_BRACE";
-        case TOKEN_CLOSE_BRACE:
-            return "TOKEN_CLOSE_BRACE";
-        case TOKEN_OPEN_SQUARE_BRACE:
-            return "TOKEN_OPEN_SQUARE_BRACE";
-        case TOKEN_CLOSED_SQUARE_BRACE:
-            return "TOKEN_CLOSED_SQUARE_BRACE";
-        case TOKEN_COMMA:
-            return "TOKEN_COMMA";
-        case TOKEN_ADD:
-            return "TOKEN_ADD";
-        case TOKEN_SUBTRACT:
-            return "TOKEN_SUBTRACT";
-        case TOKEN_EQUALS:
-            return "TOKEN_EQUALS";
-        case TOKEN_PLUS:
-            return "TOKEN_PLUS";
-        case TOKEN_MINUS:
-            return "TOKEN_MINUS";
-        case TOKEN_BYTE:
-            return "TOKEN_BYTE";
-        case TOKEN_PUTCHAR:
-            return "TOKEN_PUTCHAR";
-        case TOKEN_WHILE:
-            return "TOKEN_WHILE";
-        case TOKEN_IF:
-            return "TOKEN_IF";
-        case TOKEN_VOID:
-            return "TOKEN_VOID";
-        case TOKEN_RETURN:
-            return "TOKEN_RETURN";
-        case TOKEN_NUMBER:
-            return "TOKEN_NUMBER";
-        case TOKEN_IDENTIFIER:
-            return "TOKEN_IDENTIFIER";
-        case TOKEN_STRING:
-            return "TOKEN_STRING";
-        case TOKEN_EOF:
-            return "TOKEN_EOF";
-        case TOKEN_MAIN:
-            return "TOKEN_MAIN";
+            // separator
+            CASE (TOKEN_OPEN_PARENTHESIS)
+            CASE (TOKEN_CLOSE_PARENTHESIS)
+            CASE (TOKEN_SEMICOLON)
+            CASE (TOKEN_OPEN_BRACE)
+            CASE (TOKEN_CLOSE_BRACE)
+            CASE (TOKEN_OPEN_SQUARE_BRACE)
+            CASE (TOKEN_CLOSED_SQUARE_BRACE)
+            CASE (TOKEN_COMMA)
+
+            // math related and operators
+            CASE (TOKEN_ADD)      //++
+            CASE (TOKEN_SUBTRACT) //--
+            CASE (TOKEN_EQUALS)
+            CASE (TOKEN_PLUS)
+            CASE (TOKEN_MINUS)
+            CASE (TOKEN_STAR)          // * multiplation and pointer
+            CASE (TOKEN_SLASH)         // /
+            CASE (TOKEN_EQUAL_EQUAL)   // ==
+            CASE (TOKEN_NOT_EQUAL)     // !=
+            CASE (TOKEN_GREATER)       // >
+            CASE (TOKEN_LESS)          // <
+            CASE (TOKEN_LESS_EQUAL)    // <=
+            CASE (TOKEN_GREATER_EQUAL) // >=
+            CASE (TOKEN_NOT)           // !
+            CASE (TOKEN_MODULO)        // %
+            CASE (TOKEN_AMPERSAND)     // & address of and bit and
+
+            // bitwise
+            CASE (TOKEN_BIT_NOT)     // ~
+            CASE (TOKEN_BIT_OR)      // ||
+            CASE (TOKEN_BIT_XOR)     // ^
+            CASE (TOKEN_LEFT_SHIFT)  // <<
+            CASE (TOKEN_RIGHT_SHIFT) // >>
+
+            // keywords
+            CASE (TOKEN_BYTE)
+            CASE (TOKEN_PUTCHAR)
+            CASE (TOKEN_WHILE)
+            CASE (TOKEN_VOID)
+            CASE (TOKEN_RETURN)
+            CASE (TOKEN_IF)
+            CASE (TOKEN_ELSE)
+            CASE (TOKEN_BREAK)
+            CASE (TOKEN_CONTINUE)
+            CASE (TOKEN_TYPEDEF)
+            CASE (TOKEN_STRUCT)
+
+            // literals
+            CASE (TOKEN_NUMBER)
+            CASE (TOKEN_IDENTIFIER)
+            CASE (TOKEN_STRING) // ""
+            CASE (TOKEN_CHAR)   // ''
+
+            // extra
+            CASE (TOKEN_EOF)  // end of file
+            CASE (TOKEN_MAIN) // start, like in c.
+
         default:
             return "UNKNOWN";
         }

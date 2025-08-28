@@ -8,7 +8,7 @@
 #include <string.h>
 
 // TODO:
-// (X = done):
+// (X = done)
 // #define
 // #undef
 // #ifdef
@@ -19,6 +19,7 @@
 // #include
 // #error
 // #warning
+// comment removal
 
 // default
 // __ARRAYSIZE__
@@ -35,7 +36,7 @@ preprocessor (char *src, uint32_t length)
 
     uint32_t definedCount = 0;
 
-    defined[definedCount++] = (define){ "__ARRAYSIZE__", ArraySize };
+    defined[definedCount++] = (define){ "__ARRAYSIZE__", ARRAYSIZE_STR };
 
     static char dateWithQuotes[20];
     sprintf (dateWithQuotes, "\"%s\"", ppdate ());
@@ -104,7 +105,7 @@ preprocessor (char *src, uint32_t length)
             column++;
         }
 
-#if printdebug
+#if PRINTDEBUG
     printf ("printing defined stuff\n");
     for (uint32_t i = 0; i < definedCount; i++)
         {

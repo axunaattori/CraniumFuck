@@ -1,0 +1,20 @@
+/*
+ * https://github.com/axunaattori/CraniumFuck
+ * it should go through every step :), since comments are planned to be removed in the preprocessor
+*/
+
+void main()
+{
+    byte terms = 13;
+    byte a = 0, b = 1, next;
+
+    while(terms)
+    {
+        next = a + b;
+        putchar(next); //prints in ASCII, don't mind.
+        putchar('\n');
+        a = b;
+        b = next;
+        terms--;
+    }
+}

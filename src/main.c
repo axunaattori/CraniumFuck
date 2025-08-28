@@ -12,7 +12,8 @@ char source[2048]
       "  byte a = 0;\n"
       "  byte b = 255;\n"
       "  byte String[64] = \"hello, new line example: \\n, quote "
-      "  inside quote example: \\\" \\\'\"\n"
+      "  inside quote example: \\\" '\"\n"
+      "  byte char = 'a';\n"
       "  while (b)\n"
       "  {\n"
       "    putchar(a);\n"
@@ -20,17 +21,6 @@ char source[2048]
       "    b--;\n"
       "  }\n"
       "}";
-
-/*  somewhat what the compiled result should look like:
- *
- *     byte a;             (cell 0)
- * >-  byte b; (underflow) (cell 1)
- * [   while
- *   <. putchar(a);
- *   +  a++;
- *   >-  b--; and (b)
- * ]   }
- */
 
 // in case if the user isnt using cmake.
 #ifndef CMAKE_COMPILER_NAME
@@ -46,7 +36,9 @@ main (int argc, char *argv[])
     printf ("CF %d.%d compiled at %s %s, with %s %s\n", VERSION_MAJOR,
             VERSION_MINOR, __DATE__, __TIME__, CMAKE_COMPILER_NAME,
             CMAKE_COMPILER_VERSION);
-    char *Newsrc = preprocessor (source, strlen (source));
+    /*
+     * TODO: work on preprocessor
+     * char *Newsrc = preprocessor (source, strlen (source));
     if (Newsrc == NULL)
         {
             printf ("preprocessor: Build failed");
@@ -54,6 +46,7 @@ main (int argc, char *argv[])
         }
 
     printf ("Preprocessing Done!\n");
+    */
 
     Token *tokens = lexer (source, strlen (source));
 
@@ -63,7 +56,7 @@ main (int argc, char *argv[])
             return 1;
         }
 
-#if printdebug
+#if PRINTDEBUG
     for (int i = 0; tokens[i].type != TOKEN_EOF; i++)
         {
             printf ("type = %s, lexeme = %s, line = %d, column = %d\n",

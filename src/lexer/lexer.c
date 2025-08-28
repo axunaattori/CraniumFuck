@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "lexerutil.h"
 #include "util/error.h"
 #include "util/helper.h"
 
@@ -63,13 +64,113 @@ lexer (char *src, uint32_t length)
                         = (Token){ TOKEN_SEMICOLON, ";", line, column };
                     column++;
                     break;
+                case '%':
+                    tokens[token_count++]
+                        = (Token){ TOKEN_MODULO, ";", line, column };
+                    column++;
+                    break;
+                case '&':
+                    tokens[token_count++]
+                        = (Token){ TOKEN_AMPERSAND, ";", line, column };
+                    column++;
+                    break;
+                case '~':
+                    tokens[token_count++]
+                        = (Token){ TOKEN_BIT_NOT, ";", line, column };
+                    column++;
+                    break;
+                case '^':
+                    tokens[token_count++]
+                        = (Token){ TOKEN_BIT_XOR, "^", line, column };
+                    column++;
+                    break;
+                case '|':
+                    if (peek (src, i, length) == '|')
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_BIT_OR, "||", line, column };
+                            column += 2;
+                            break;
+                        }
+                    else
+                        {
+                            column++;
+                            break;
+                        }
+                case '>':
+                    if (peek (src, i, length) == '=')
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_LESS_EQUAL, ">=", line,
+                                           column };
+                            i++;
+                            column += 2;
+                        }
+                    else if (peek (src, i, length) == '>')
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_RIGHT_SHIFT, ">>", line,
+                                           column };
+                            i++;
+                            column += 2;
+                        }
+                    else
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_LESS, ">", line, column };
+                            column++;
+                        }
+                    break;
+                case '<':
+                    if (peek (src, i, length) == '=')
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_LESS_EQUAL, "<=", line,
+                                           column };
+                            i++;
+                            column += 2;
+                        }
+                    else if (peek (src, i, length) == '<')
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_LEFT_SHIFT, "<<", line,
+                                           column };
+                            i++;
+                            column += 2;
+                        }
+                    else
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_LESS, "<", line, column };
+                            column++;
+                        }
+                    break;
+                    tokens[token_count++]
+                        = (Token){ TOKEN_EQUALS, "=", line, column };
+                    column++;
+                    break;
                 case '=':
+                    if (peek (src, i, length) == '+')
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_EQUAL_EQUAL, "==", line,
+                                           column };
+                            i++;
+                            column += 2;
+                        }
+                    else
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_PLUS, "=", line, column };
+                            column++;
+                        }
+                    break;
                     tokens[token_count++]
                         = (Token){ TOKEN_EQUALS, "=", line, column };
                     column++;
                     break;
                 case '+':
-                    if (src[i + 1] == '+')
+                    if (peek (src, i, length) == '+')
                         {
                             tokens[token_count++]
                                 = (Token){ TOKEN_ADD, "++", line, column };
@@ -84,7 +185,7 @@ lexer (char *src, uint32_t length)
                         }
                     break;
                 case '-':
-                    if (src[i + 1] == '-')
+                    if (peek (src, i, length) == '-')
                         {
                             tokens[token_count++]
                                 = (Token){ TOKEN_SUBTRACT, "--", line,
@@ -103,6 +204,32 @@ lexer (char *src, uint32_t length)
                     tokens[token_count++]
                         = (Token){ TOKEN_COMMA, ",", line, column };
                     column++;
+                    break;
+                case '*':
+                    tokens[token_count++]
+                        = (Token){ TOKEN_STAR, "*", line, column };
+                    column++;
+                    break;
+                case '/':
+                    tokens[token_count++]
+                        = (Token){ TOKEN_SLASH, "/", line, column };
+                    column++;
+                    break;
+                case '!':
+                    if (peek (src, i, length) == '=')
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_NOT_EQUAL, "!=", line,
+                                           column };
+                            i++;
+                            column += 2;
+                        }
+                    else
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_NOT, "!", line, column };
+                            column++;
+                        }
                     break;
                 case '\n':
                     column = 1;
@@ -191,6 +318,34 @@ lexer (char *src, uint32_t length)
                                                    startcolumn };
                                     break;
                                 }
+                            else if (strcmp (lexeme, "break") == 0)
+                                {
+                                    tokens[token_count++]
+                                        = (Token){ TOKEN_BREAK, lexeme, line,
+                                                   startcolumn };
+                                    break;
+                                }
+                            else if (strcmp (lexeme, "continue") == 0)
+                                {
+                                    tokens[token_count++]
+                                        = (Token){ TOKEN_CONTINUE, lexeme,
+                                                   line, startcolumn };
+                                    break;
+                                }
+                            else if (strcmp (lexeme, "typedef") == 0)
+                                {
+                                    tokens[token_count++]
+                                        = (Token){ TOKEN_TYPEDEF, lexeme, line,
+                                                   startcolumn };
+                                    break;
+                                }
+                            else if (strcmp (lexeme, "struct") == 0)
+                                {
+                                    tokens[token_count++]
+                                        = (Token){ TOKEN_STRUCT, lexeme, line,
+                                                   startcolumn };
+                                    break;
+                                }
                             else
                                 {
                                     tokens[token_count++]
@@ -215,33 +370,33 @@ lexer (char *src, uint32_t length)
 
                             i--; // adjust
 
-                            uint32_t leng = i - start + 1;
+                            size_t leng = i - start + 1;
                             char *lexeme = malloc (leng + 1);
                             if (!lexeme)
                                 {
                                     uerror ("Memory Error", line, column);
                                 }
-                            strncpy (lexeme, &src[start], leng);
+                            memcpy (lexeme, &src[start], leng);
                             lexeme[leng] = '\0';
 
                             tokens[token_count++]
                                 = (Token){ TOKEN_NUMBER, lexeme, line,
                                            startcolumn };
-                            break;
                         }
-                    if (c == '\'' || c == '"') // strings
+                    if (c == '\'' || c == '"')
                         {
                             char startquote = c;
                             int startcolumn = column;
-                            size_t arraysize = 128;
+                            size_t capacity = 128;
                             size_t len = 0;
-                            char *strarray = malloc (arraysize);
-                            if (!strarray)
-                                {
-                                    uerror ("Memory Error", line, column);
-                                }
+
+                            char *str = malloc (capacity);
+                            if (!str)
+                                uerror ("Memory Error", line, column);
+
                             i++; // skip opening quote
                             column++;
+
                             while (i < length && src[i] != startquote)
                                 {
                                     if (src[i] == '\n')
@@ -251,72 +406,73 @@ lexer (char *src, uint32_t length)
                                             i++;
                                             continue;
                                         }
-                                    if (src[i] == '\\')
+
+                                    char ch = src[i];
+
+                                    // handle escape sequences
+                                    if (ch == '\\')
                                         {
                                             i++;
                                             column++;
                                             if (i >= length)
                                                 {
-                                                    free (strarray);
+                                                    free (str);
                                                     uerror ("Escape character "
                                                             "at end of input.",
                                                             line, column);
                                                 }
-                                            char escaped = escape (src[i]);
-                                            if (len >= arraysize - 1)
-                                                {
-                                                    arraysize *= 2;
-                                                    char *temp = realloc (
-                                                        strarray, arraysize);
-                                                    if (!temp)
-                                                        {
-                                                            free (strarray);
-                                                            uerror (
-                                                                "Memory Error",
-                                                                line, column);
-                                                        }
-                                                    strarray = temp;
-                                                }
-                                            strarray[len++] = escaped;
-                                            i++;
-                                            column++;
-                                            continue;
+                                            ch = escape (src[i]);
                                         }
-                                    if (len >= arraysize - 1)
+
+                                    // resize if needed
+                                    if (len + 1 >= capacity)
                                         {
-                                            arraysize *= 2;
-                                            char *temp = realloc (strarray,
-                                                                  arraysize);
-                                            if (!temp)
+                                            capacity *= 2;
+                                            char *tmp
+                                                = realloc (str, capacity);
+                                            if (!tmp)
                                                 {
-                                                    free (strarray);
+                                                    free (str);
                                                     uerror ("Memory Error",
                                                             line, column);
                                                 }
-                                            strarray = temp;
+                                            str = tmp;
                                         }
-                                    strarray[len++] = src[i];
+
+                                    str[len++] = ch;
                                     i++;
                                     column++;
                                 }
+
                             if (i >= length || src[i] != startquote)
                                 {
-                                    free (strarray);
-                                    char buffer[1024];
-                                    sprintf (buffer,
-                                             "Lexer: Couldn't find "
-                                             "ending quote (%c)",
-                                             startquote);
-                                    uerror ("Lexer: Couldn't find ending "
-                                            "quote (%c)",
-                                            line, column);
+                                    free (str);
+                                    uerror (
+                                        "Lexer: Couldn't find ending quote",
+                                        line, column);
                                 }
-                            strarray[len] = '\0';
-                            tokens[token_count++]
-                                = (Token){ TOKEN_STRING, strarray, line,
-                                           startcolumn };
+                            str[len] = '\0';
+                            if (startquote == '"')
+                                {
+                                    tokens[token_count++]
+                                        = (Token){ TOKEN_STRING, strdup (str),
+                                                   line, startcolumn };
+                                }
+                            else
+                                {
+                                    if (len != 1)
+                                        {
+                                            uerror ("char byte too long! use "
+                                                    "arrays.",
+                                                    line, column);
+                                        }
+                                    tokens[token_count++]
+                                        = (Token){ TOKEN_CHAR, strdup (str),
+                                                   line, startcolumn };
+                                }
+                            free (str);
                             column++;
-                            break;
+                            i++; // skip closing quote
                         }
                 }
         }
