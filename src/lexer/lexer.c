@@ -84,6 +84,11 @@ lexer (char *src, uint32_t length)
                         = (Token){ TOKEN_BIT_XOR, "^", line, column };
                     column++;
                     break;
+                case '.':
+                    tokens[token_count++]
+                        = (Token){ TOKEN_BIT_XOR, ".", line, column };
+                    column++;
+                    break;
                 case '|':
                     if (peek (src, i, length) == '|')
                         {
@@ -190,6 +195,13 @@ lexer (char *src, uint32_t length)
                             tokens[token_count++]
                                 = (Token){ TOKEN_SUBTRACT, "--", line,
                                            column };
+                            i++;
+                            column += 2;
+                        }
+                    else if (peek (src, i, length) == '>')
+                        {
+                            tokens[token_count++]
+                                = (Token){ TOKEN_ARROW, "->", line, column };
                             i++;
                             column += 2;
                         }

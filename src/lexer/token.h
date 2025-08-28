@@ -30,6 +30,10 @@ typedef enum
     TOKEN_MODULO,        // %
     TOKEN_AMPERSAND,     // & address of and bit and
 
+    // member access operators
+    TOKEN_DOT,   // .
+    TOKEN_ARROW, // ->
+
     // bitwise
     TOKEN_BIT_NOT,     // ~
     TOKEN_BIT_OR,      // ||

@@ -37,6 +37,10 @@ tokenTypeToString (tokenType type)
             CASE (TOKEN_MODULO)        // %
             CASE (TOKEN_AMPERSAND)     // & address of and bit and
 
+            // member access operators
+            CASE (TOKEN_DOT)   // .
+            CASE (TOKEN_ARROW) // ->
+
             // bitwise
             CASE (TOKEN_BIT_NOT)     // ~
             CASE (TOKEN_BIT_OR)      // ||
