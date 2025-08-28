@@ -66,17 +66,17 @@ lexer (char *src, uint32_t length)
                     break;
                 case '%':
                     tokens[token_count++]
-                        = (Token){ TOKEN_MODULO, ";", line, column };
+                        = (Token){ TOKEN_MODULO, "%", line, column };
                     column++;
                     break;
                 case '&':
                     tokens[token_count++]
-                        = (Token){ TOKEN_AMPERSAND, ";", line, column };
+                        = (Token){ TOKEN_AMPERSAND, "&", line, column };
                     column++;
                     break;
                 case '~':
                     tokens[token_count++]
-                        = (Token){ TOKEN_BIT_NOT, ";", line, column };
+                        = (Token){ TOKEN_BIT_NOT, "~", line, column };
                     column++;
                     break;
                 case '^':
@@ -86,7 +86,7 @@ lexer (char *src, uint32_t length)
                     break;
                 case '.':
                     tokens[token_count++]
-                        = (Token){ TOKEN_BIT_XOR, ".", line, column };
+                        = (Token){ TOKEN_DOT, ".", line, column };
                     column++;
                     break;
                 case '|':
@@ -95,13 +95,12 @@ lexer (char *src, uint32_t length)
                             tokens[token_count++]
                                 = (Token){ TOKEN_BIT_OR, "||", line, column };
                             column += 2;
-                            break;
                         }
                     else
                         {
                             column++;
-                            break;
                         }
+                    break;
                 case '>':
                     if (peek (src, i, length) == '=')
                         {
@@ -150,10 +149,6 @@ lexer (char *src, uint32_t length)
                             column++;
                         }
                     break;
-                    tokens[token_count++]
-                        = (Token){ TOKEN_EQUALS, "=", line, column };
-                    column++;
-                    break;
                 case '=':
                     if (peek (src, i, length) == '+')
                         {
@@ -169,10 +164,6 @@ lexer (char *src, uint32_t length)
                                 = (Token){ TOKEN_PLUS, "=", line, column };
                             column++;
                         }
-                    break;
-                    tokens[token_count++]
-                        = (Token){ TOKEN_EQUALS, "=", line, column };
-                    column++;
                     break;
                 case '+':
                     if (peek (src, i, length) == '+')
