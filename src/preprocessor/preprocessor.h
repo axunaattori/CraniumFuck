@@ -9,6 +9,6 @@ typedef struct
 
 #include <stdint.h>
 
-char *preprocessor (char *src, uint32_t length);
+void preprocessor (char *src, uint32_t length);
 
 #endif

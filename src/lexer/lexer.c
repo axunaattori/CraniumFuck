@@ -1,5 +1,4 @@
 #include "lexer.h"
-#include "lexerutil.h"
 #include "util/error.h"
 #include "util/helper.h"
 
@@ -161,7 +160,7 @@ lexer (char *src, uint32_t length)
                     else
                         {
                             tokens[token_count++]
-                                = (Token){ TOKEN_PLUS, "=", line, column };
+                                = (Token){ TOKEN_EQUALS, "=", line, column };
                             column++;
                         }
                     break;
@@ -474,8 +473,6 @@ lexer (char *src, uint32_t length)
                                                    line, startcolumn };
                                 }
                             free (str);
-                            column++;
-                            i++; // skip closing quote
                         }
                 }
         }

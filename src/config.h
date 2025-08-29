@@ -6,6 +6,9 @@
 // __ARRAYSIZE__ in preprocessor.c
 // By default its 30000.
 #define ARRAYSIZE 30000
-#define ARRAYSIZE_STR "30000"
+
+// amount of temp cells in the start
+// for math and such.
+#define TEMPCELLS 5
 
 #endif

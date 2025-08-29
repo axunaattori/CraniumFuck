@@ -2,10 +2,10 @@
 #include "config.h"
 #include "pphelper.h"
 #include "util/error.h"
+#include "util/helper.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 // TODO:
 // (X = done)
@@ -27,16 +27,19 @@
 // __DATE__
 // __VERSION__
 
-char *
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER (x)
+
+void
 preprocessor (char *src, uint32_t length)
 {
     define *defined = malloc (256 * sizeof (define));
     if (!defined)
-        return NULL;
+        return;
 
     uint32_t definedCount = 0;
 
-    defined[definedCount++] = (define){ "__ARRAYSIZE__", ARRAYSIZE_STR };
+    defined[definedCount++] = (define){ "__ARRAYSIZE__", STR (ARRAYSIZE) };
 
     static char dateWithQuotes[20];
     sprintf (dateWithQuotes, "\"%s\"", ppdate ());
@@ -51,27 +54,81 @@ preprocessor (char *src, uint32_t length)
 
     uint32_t column = 1;
     uint32_t line = 1;
-    for (uint32_t pos = 0; pos < length; pos++)
+    for (uint32_t i = 0; i < length; i++)
         {
-            char c = src[pos];
+            char c = src[i];
             switch (c)
                 {
                 case '#':
                     {
                         // planning to rewrite this
+                        break;
                     }
                 case '\n':
                     line++;
                     column = 1;
                     break;
+                case '/':
+                    if (peek (src, i, length) == '/')
+                        {
+                            while (i < length && src[i] != '\n'
+                                   && src[i] != '\0')
+                                {
+                                    src[i] = ' ';
+                                    i++;
+                                    column++;
+                                }
+                            if (i < length && src[i] == '\n')
+                                {
+                                    line++;
+                                    column = 1;
+                                }
+                            continue;
+                        }
+                    else if (peek (src, i, length) == '*')
+                        {
+                            uint32_t startline = line;
+                            uint32_t startcolumn = column;
+                            while (i < length)
+                                {
+                                    if (src[i] == '\0')
+                                        {
+                                            uerror ("Multiline comments end "
+                                                    "with */",
+                                                    startline, startcolumn);
+                                        }
+                                    if (src[i] == '*'
+                                        && peek (src, i, length) == '/')
+                                        {
+                                            src[i++] = ' ';
+                                            src[i++] = ' ';
+                                            column += 2;
+                                            break;
+                                        }
+                                    else if (src[i] == '\n')
+                                        {
+                                            line++;
+                                            i++;
+                                            column = 1;
+                                        }
+                                    else
+                                        {
+                                            src[i] = ' ';
+                                            i++;
+                                            column++;
+                                        }
+                                }
+                            continue;
+                        }
+                    break;
                 case '"':
                 case '\'':
                     {
                         char startquote = c;
-                        pos++;
-                        while (pos < length && src[pos] != startquote)
+                        i++;
+                        while (i < length && src[i] != startquote)
                             {
-                                if (src[pos] == '\n')
+                                if (src[i] == '\n')
                                     {
                                         line++;
                                         column = 0;
@@ -80,15 +137,16 @@ preprocessor (char *src, uint32_t length)
                                     {
                                         column++;
                                     }
-                                if (src[pos] == '\\')
-                                    pos++; // skip escape
-                                pos++;
+                                if (src[i] == '\\')
+                                    i++; // skip escape, the preprocessor
+                                         // doesnt have any use for it.
+                                i++;
                             }
-                        if (pos >= length)
+                        if (i >= length)
                             {
                                 char buffer[1024];
                                 snprintf (buffer, sizeof (buffer),
-                                          "preprocessor: Couldn't "
+                                          "preprocessor: couldn't "
                                           "find ending "
                                           "quote (%c). ",
                                           startquote);
@@ -98,8 +156,8 @@ preprocessor (char *src, uint32_t length)
                         break;
                     }
                 default:
-                    // TODO: add function to check for defined stuff and expand
-                    // them
+                    // todo: add function to check for defined stuff and
+                    // expand them
                     break;
                 }
             column++;
@@ -114,6 +172,4 @@ preprocessor (char *src, uint32_t length)
         }
 #endif
     free (defined);
-    return "example"; // TODO: actually preprocess this and return the
-                      // processed thing
 }

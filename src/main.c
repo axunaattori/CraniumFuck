@@ -7,12 +7,12 @@
 #include <string.h>
 
 char source[2048]
-    = "void main()"
-      "  {"
-      "  byte a = 0;\n"
-      "  byte b = 255;\n"
+    = "void main()\n"
+      "  {\n"
+      "  byte a = 0; //comment test\n"
+      "  byte b = 255; /* another comment test */\n"
       "  byte String[64] = \"hello, new line example: \\n, quote "
-      "  inside quote example: \\\" '\"\n"
+      "  inside quote example: \\\" '\";\n"
       "  byte char = 'a';\n"
       "  while (b)\n"
       "  {\n"
@@ -36,17 +36,9 @@ main (int argc, char *argv[])
     printf ("CF %d.%d compiled at %s %s, with %s %s\n", VERSION_MAJOR,
             VERSION_MINOR, __DATE__, __TIME__, CMAKE_COMPILER_NAME,
             CMAKE_COMPILER_VERSION);
-    /*
-     * TODO: work on preprocessor
-     * char *Newsrc = preprocessor (source, strlen (source));
-    if (Newsrc == NULL)
-        {
-            printf ("preprocessor: Build failed");
-            return 1;
-        }
+    preprocessor (source, strlen (source));
 
     printf ("Preprocessing Done!\n");
-    */
 
     Token *tokens = lexer (source, strlen (source));
 
