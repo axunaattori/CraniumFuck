@@ -54,7 +54,7 @@ lexer (char *src, uint32_t length)
                     column++;
                     break;
                 case ']':
-                    tokens[token_count++] = (Token){ TOKEN_CLOSED_SQUARE_BRACE,
+                    tokens[token_count++] = (Token){ TOKEN_CLOSE_SQUARE_BRACE,
                                                      "]", line, column };
                     column++;
                     break;
@@ -89,16 +89,9 @@ lexer (char *src, uint32_t length)
                     column++;
                     break;
                 case '|':
-                    if (peek (src, i, length) == '|')
-                        {
-                            tokens[token_count++]
-                                = (Token){ TOKEN_BIT_OR, "||", line, column };
-                            column += 2;
-                        }
-                    else
-                        {
-                            column++;
-                        }
+                    tokens[token_count++]
+                        = (Token){ TOKEN_BIT_OR, "||", line, column };
+                    column++;
                     break;
                 case '>':
                     if (peek (src, i, length) == '=')
@@ -464,8 +457,10 @@ lexer (char *src, uint32_t length)
                                 {
                                     if (len != 1)
                                         {
-                                            uerror ("char byte too long! use "
-                                                    "arrays.",
+                                            uerror ("char byte too long! (or "
+                                                    "it has nothing) use "
+                                                    "arrays for "
+                                                    "multi-character storing.",
                                                     line, column);
                                         }
                                     tokens[token_count++]

@@ -6,21 +6,21 @@
 #include <stdio.h>
 #include <string.h>
 
-char source[2048]
-    = "void main()\n"
-      "  {\n"
-      "  byte a = 0; //comment test\n"
-      "  byte b = 255; /* another comment test */\n"
-      "  byte String[64] = \"hello, new line example: \\n, quote "
-      "  inside quote example: \\\" '\";\n"
-      "  byte char = 'a';\n"
-      "  while (b)\n"
-      "  {\n"
-      "    putchar(a);\n"
-      "    a++;\n"
-      "    b--;\n"
-      "  }\n"
-      "}";
+char source[] = "void main()\n"
+                "{\n"
+                "byte terms = 13;\n"
+                "byte a = 0, b = 1, next;\n"
+                "\n"
+                "while(terms)\n"
+                "{\n"
+                "next = a + b;\n"
+                "putchar (next); // prints in ASCII, don't mind.\n"
+                "putchar ('\\n');\n"
+                "a = b;\n"
+                "b = next;\n"
+                "terms--;\n"
+                "}\n"
+                "}";
 
 // in case if the user isnt using cmake.
 #ifndef CMAKE_COMPILER_NAME

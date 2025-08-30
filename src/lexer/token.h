@@ -10,7 +10,7 @@ typedef enum
     TOKEN_OPEN_BRACE,
     TOKEN_CLOSE_BRACE,
     TOKEN_OPEN_SQUARE_BRACE,
-    TOKEN_CLOSED_SQUARE_BRACE,
+    TOKEN_CLOSE_SQUARE_BRACE,
     TOKEN_COMMA,
     // math related and operators
     TOKEN_ADD,      //++
@@ -36,7 +36,7 @@ typedef enum
 
     // bitwise
     TOKEN_BIT_NOT,     // ~
-    TOKEN_BIT_OR,      // ||
+    TOKEN_BIT_OR,      // |
     TOKEN_BIT_XOR,     // ^
     TOKEN_LEFT_SHIFT,  // <<
     TOKEN_RIGHT_SHIFT, // >>

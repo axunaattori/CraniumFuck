@@ -16,7 +16,7 @@ tokenTypeToString (tokenType type)
             CASE (TOKEN_OPEN_BRACE)
             CASE (TOKEN_CLOSE_BRACE)
             CASE (TOKEN_OPEN_SQUARE_BRACE)
-            CASE (TOKEN_CLOSED_SQUARE_BRACE)
+            CASE (TOKEN_CLOSE_SQUARE_BRACE)
             CASE (TOKEN_COMMA)
 
             // math related and operators

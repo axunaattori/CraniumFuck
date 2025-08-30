@@ -19,7 +19,7 @@
 // #include
 // #error
 // #warning
-// comment removal
+// comment removal X
 
 // default
 // __ARRAYSIZE__
