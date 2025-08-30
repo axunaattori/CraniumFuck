@@ -88,7 +88,7 @@ typedef struct node
         {
             struct node *body;
             struct node *condition;
-        } whileNode; // cf standing for the language's name.
+        } whileNode;
 
         struct
         {
