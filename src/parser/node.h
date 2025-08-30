@@ -35,13 +35,35 @@ typedef enum
     OP_BIT_XOR,       // ^
     OP_EQUAL,         // ==
     OP_NOT_EQUAL,     // !=
+    OP_LOGIC_AND,     // &&
+    OP_LOGIC_OR,      // ||
 
     // unary
     OP_LOGIC_NOT, // !variable
+    OP_BIT_NOT,   // ~variable
     OP_INC,       //++
     OP_DEC,       //--
-    OP_ADDRESS    // &variable
+    OP_ADDRESS,   // &variable
+    OP_DEFERENCE  // *variable
 } operator;
+
+/*
+ * 1: () . X++ X-- -> []                L -> R
+ * 2: ++X --X !X ~X *X (derefernce) &X  R -> L
+ * 3: * / %                             L -> R
+ * 4: + -
+ * 5: << >>
+ * 6: < <= > >=
+ * 7: == !=
+ * 8: &
+ * 9: ^
+ * 10: |
+ * 11: &&
+ * 12: ||
+ * The language wont support 13 (?:) for now
+ * 14: = (and those += -= if im not too lazy) R -> L
+ * 15: ,    L -> R
+ */
 
 typedef struct node
 {
