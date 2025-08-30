@@ -90,7 +90,7 @@ lexer (char *src, uint32_t length)
                     break;
                 case '|':
                     tokens[token_count++]
-                        = (Token){ TOKEN_BIT_OR, "||", line, column };
+                        = (Token){ TOKEN_BIT_OR, "|", line, column };
                     column++;
                     break;
                 case '>':
