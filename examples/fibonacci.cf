@@ -1,6 +1,5 @@
 /*
  * https://github.com/axunaattori/CraniumFuck
- * it should go through every step :), since comments are planned to be removed in the preprocessor
 */
 
 void main()

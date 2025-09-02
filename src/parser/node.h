@@ -71,7 +71,7 @@ typedef struct node
     uint32_t line;
     union
     {
-        int constant;
+        uint8_t constant;
         const char *name; // identifier
 
         struct
@@ -96,7 +96,7 @@ typedef struct node
         struct
         {
             const char *name;
-            // struct node *type; ill most likely end up adding typedef support
+            struct node *type; // unused for now.
             struct node *init;
         } varDec;
 
@@ -108,8 +108,8 @@ typedef struct node
 
         struct
         {
-            struct node *body;
             struct node *condition;
+            struct node *body;
         } whileNode;
 
         struct
@@ -121,5 +121,25 @@ typedef struct node
         } function;
     };
 } node;
+
+node *create_constant_node (uint8_t value, uint32_t line, uint32_t column);
+node *create_identifier_node (const char *name, uint32_t line,
+                              uint32_t column);
+node *create_assign_node (const char *name, node *value, uint32_t line,
+                          uint32_t column);
+node *create_binary_node (node *left, node *right, operator op, uint32_t line,
+                          uint32_t column);
+node *create_unary_node (node *operand, operator op, uint32_t line,
+                         uint32_t column);
+node *create_varDec_node (const char *name, node *type, node *init,
+                          uint32_t line, uint32_t column);
+// type is unuseable for now. but will be in the function for future me. so i
+// dont have to replace it everywhere
+node *create_block_node (node **statements, size_t size, uint32_t line,
+                         uint32_t column);
+node *create_while_node (node *condition, node *body, uint32_t line,
+                         uint32_t column);
+node *create_function_node (const char *name, node **arguments, size_t size,
+                            node *body, uint32_t line, uint32_t column);
 
 #endif
