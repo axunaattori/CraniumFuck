@@ -5,7 +5,7 @@
         return #token;
 
 const char *
-tokenTypeToString (tokenType type)
+token_type_to_string (tokenType type)
 {
     switch (type)
         {

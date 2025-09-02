@@ -2,6 +2,6 @@
 // one at that would be nice.
 
 void
-processargs (int argc, char *argv[])
+process_args (int argc, char *argv[])
 {
 }

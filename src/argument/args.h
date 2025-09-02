@@ -1,6 +1,6 @@
 #ifndef ARGS_H
 #define ARGS_H
 
-void processargs (int argc, char *argv[]);
+void process_args (int argc, char *argv[]);
 
 #endif

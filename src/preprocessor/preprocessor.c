@@ -37,20 +37,20 @@ preprocessor (char *src, uint32_t length)
     if (!defined)
         return;
 
-    uint32_t definedCount = 0;
+    uint32_t defined_count = 0;
 
-    defined[definedCount++] = (define){ "__ARRAYSIZE__", STR (ARRAYSIZE) };
+    defined[defined_count++] = (define){ "__ARRAYSIZE__", STR (ARRAYSIZE) };
 
-    static char dateWithQuotes[20];
-    sprintf (dateWithQuotes, "\"%s\"", ppdate ());
-    static char timeWithQuotes[20];
-    sprintf (timeWithQuotes, "\"%s\"", pptime ());
-    static char versionWithQuotes[20];
-    sprintf (versionWithQuotes, "\"%s\"", ppversion ());
+    static char date_with_quotes[20];
+    sprintf (date_with_quotes, "\"%s\"", ppdate ());
+    static char time_with_quotes[20];
+    sprintf (time_with_quotes, "\"%s\"", pptime ());
+    static char version_with_quotes[20];
+    sprintf (version_with_quotes, "\"%s\"", ppversion ());
 
-    defined[definedCount++] = (define){ "__DATE__", dateWithQuotes };
-    defined[definedCount++] = (define){ "__TIME__", timeWithQuotes };
-    defined[definedCount++] = (define){ "__VERSION__", versionWithQuotes };
+    defined[defined_count++] = (define){ "__DATE__", date_with_quotes };
+    defined[defined_count++] = (define){ "__TIME__", time_with_quotes };
+    defined[defined_count++] = (define){ "__VERSION__", version_with_quotes };
 
     uint32_t column = 1;
     uint32_t line = 1;
@@ -165,7 +165,7 @@ preprocessor (char *src, uint32_t length)
 
 #if PRINTDEBUG
     printf ("printing defined stuff\n");
-    for (uint32_t i = 0; i < definedCount; i++)
+    for (uint32_t i = 0; i < defined_count; i++)
         {
             printf ("name: %s content: %s\n", defined[i].name,
                     defined[i].content);

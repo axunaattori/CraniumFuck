@@ -79,6 +79,6 @@ typedef struct
     int column;
 } Token;
 
-const char *tokenTypeToString (tokenType type);
+const char *token_type_to_string (tokenType type);
 
 #endif

@@ -8,3 +8,5 @@ cmake ..
 make
 ```
 
+
+If you want to contribute please use snake_case!

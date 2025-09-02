@@ -1,37 +1,8 @@
 #include "pphelper.h"
-#include "util/error.h"
 #include "version.h"
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
-
-char *
-getseperated (char *src, uint32_t length, char c, int error, uint32_t line,
-              uint32_t *pos)
-{
-    uint32_t start = *pos;
-    while (src[*pos] != c)
-        {
-            (*pos)++;
-            if (*pos >= length)
-                {
-                    if (error != 0)
-                        uerror ("Couldn't find ending to #define!", line, 0);
-                }
-        }
-
-    uint32_t size = *pos - start;
-    char *text = malloc (size + 1);
-    if (!text)
-        return NULL;
-
-    memcpy (text, &src[start], size);
-    text[size] = '\0';
-
-    return text;
-}
 
 char *
 pptime ()

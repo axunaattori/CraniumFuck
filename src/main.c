@@ -52,7 +52,7 @@ main (int argc, char *argv[])
     for (int i = 0; tokens[i].type != TOKEN_EOF; i++)
         {
             printf ("type = %s, lexeme = %s, line = %d, column = %d\n",
-                    tokenTypeToString (tokens[i].type), tokens[i].lexeme,
+                    token_type_to_string (tokens[i].type), tokens[i].lexeme,
                     tokens[i].line, tokens[i].column);
         }
 #endif

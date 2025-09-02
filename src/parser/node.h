@@ -16,7 +16,7 @@ typedef enum // currently has the nodes required for the fibonacci test
     NODE_BLOCK,
     NODE_WHILE,
     NODE_FUNCTION
-} nodeType;
+} node_type;
 
 typedef enum
 {
@@ -65,7 +65,7 @@ typedef enum
  * 15: ,    L -> R
  */
 
-typedef struct node
+typedef struct Node
 {
     uint32_t column;
     uint32_t line;
@@ -77,69 +77,69 @@ typedef struct node
         struct
         {
             const char *name;
-            struct node *value;
+            struct Node *value;
         } assign;
 
         struct
         {
-            struct node *left;
-            struct node *right;
+            struct Node *left;
+            struct Node *right;
             operator op;
         } binary;
 
         struct
         {
-            struct node *operand;
+            struct Node *operand;
             operator op; //++ for +, -- for -, others have 1 char
         } unary;
 
         struct
         {
             const char *name;
-            struct node *type; // unused for now.
-            struct node *init;
-        } varDec;
+            struct Node *type; // unused for now.
+            struct Node *init;
+        } var_dec;
 
         struct
         {
-            struct node **statements;
+            struct Node **statements;
             size_t size;
         } block;
 
         struct
         {
-            struct node *condition;
-            struct node *body;
-        } whileNode;
+            struct Node *condition;
+            struct Node *body;
+        } while_node;
 
         struct
         {
             const char *name;
-            struct node **arguments;
+            struct Node **arguments;
             size_t size;
-            struct node *body;
+            struct Node *body;
         } function;
     };
-} node;
+} Node;
 
-node *create_constant_node (uint8_t value, uint32_t line, uint32_t column);
-node *create_identifier_node (const char *name, uint32_t line,
+Node *create_constant_node (uint8_t value, uint32_t line, uint32_t column);
+Node *create_identifier_node (const char *name, uint32_t line,
                               uint32_t column);
-node *create_assign_node (const char *name, node *value, uint32_t line,
+Node *create_assign_node (const char *name, Node *value, uint32_t line,
                           uint32_t column);
-node *create_binary_node (node *left, node *right, operator op, uint32_t line,
+Node *create_binary_node (Node *left, Node *right, operator op, uint32_t line,
                           uint32_t column);
-node *create_unary_node (node *operand, operator op, uint32_t line,
+Node *create_unary_node (Node *operand, operator op, uint32_t line,
                          uint32_t column);
-node *create_varDec_node (const char *name, node *type, node *init,
-                          uint32_t line, uint32_t column);
+Node *create_var_dec_node (const char *name, Node *type, Node *init,
+                           uint32_t line, uint32_t column);
 // type is unuseable for now. but will be in the function for future me. so i
 // dont have to replace it everywhere
-node *create_block_node (node **statements, size_t size, uint32_t line,
+Node *create_block_node (Node **statements, size_t size, uint32_t line,
                          uint32_t column);
-node *create_while_node (node *condition, node *body, uint32_t line,
+Node *create_while_node (Node *condition, Node *body, uint32_t line,
                          uint32_t column);
-node *create_function_node (const char *name, node **arguments, size_t size,
-                            node *body, uint32_t line, uint32_t column);
+Node *create_function_node (const char *name, Node **arguments, size_t size,
+                            Node *body, uint32_t line, uint32_t column);
 
 #endif
