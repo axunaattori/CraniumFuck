@@ -69,8 +69,7 @@ token_type_to_string (tokenType type)
             CASE (TOKEN_CHAR)   // ''
 
             // extra
-            CASE (TOKEN_EOF)  // end of file
-            CASE (TOKEN_MAIN) // start, like in c.
+            CASE (TOKEN_EOF) // end of file
 
         default:
             return "UNKNOWN";

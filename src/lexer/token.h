@@ -68,7 +68,6 @@ typedef enum
 
     // extra
     TOKEN_EOF, // end of file
-    TOKEN_MAIN // start, like in c.
 } tokenType;
 
 typedef struct

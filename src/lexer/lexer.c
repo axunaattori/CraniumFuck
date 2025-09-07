@@ -336,13 +336,6 @@ lexer (char *src, uint32_t length)
                                                    startcolumn };
                                     break;
                                 }
-                            else if (strcmp (lexeme, "main") == 0)
-                                {
-                                    tokens[token_count++]
-                                        = (Token){ TOKEN_MAIN, lexeme, line,
-                                                   startcolumn };
-                                    break;
-                                }
                             else if (strcmp (lexeme, "break") == 0)
                                 {
                                     tokens[token_count++]
