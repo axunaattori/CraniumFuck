@@ -13,8 +13,8 @@ typedef enum
     TOKEN_CLOSE_SQUARE_BRACE,
     TOKEN_COMMA,
     // math related and operators
-    TOKEN_ADD,      //++
-    TOKEN_SUBTRACT, //--
+    TOKEN_INCREMENT, //++
+    TOKEN_DECREMENT, //--
     TOKEN_EQUALS,
     TOKEN_PLUS,
     TOKEN_MINUS,
@@ -55,6 +55,7 @@ typedef enum
     TOKEN_IF,
     TOKEN_ELSE,
 
+    TOKEN_DO,
     TOKEN_BREAK,
     TOKEN_CONTINUE,
 
@@ -73,7 +74,7 @@ typedef enum
 typedef struct
 {
     tokenType type;
-    char *lexeme;
+    const char *lexeme;
     int line;
     int column;
 } Token;

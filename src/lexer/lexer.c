@@ -3,17 +3,76 @@
 #include "util/helper.h"
 
 #include <ctype.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "token.h"
 
-// to the person reading this: make this better if you want.
-// mainly the default: sucks.
-
 Token *lexer(char *src, uint32_t length)
 {
+    typedef struct
+    {
+        const char *str;
+        tokenType type;
+        int length;
+    } lex_operator;
+
+    typedef struct
+    {
+        const char *name;
+        tokenType type;
+    } Keyword;
+    lex_operator operators[] = {
+        {"++", TOKEN_INCREMENT, 2},
+        {"--", TOKEN_DECREMENT, 2},
+        {"->", TOKEN_ARROW, 2},
+        {"!=", TOKEN_NOT_EQUAL, 2},
+        {"==", TOKEN_EQUAL_EQUAL, 2},
+        {"<=", TOKEN_GREATER_EQUAL, 2},
+        {">=", TOKEN_LESS_EQUAL, 2},
+        {"<<", TOKEN_LEFT_SHIFT, 2},
+        {">>", TOKEN_RIGHT_SHIFT, 2},
+        {"&&", TOKEN_LOGIC_AND, 2},
+        {"||", TOKEN_LOGIC_OR, 2},
+        {"(", TOKEN_OPEN_PARENTHESIS, 1},
+        {")", TOKEN_CLOSE_PARENTHESIS, 1},
+        {"{", TOKEN_OPEN_BRACE, 1},
+        {"}", TOKEN_CLOSE_BRACE, 1},
+        {"[", TOKEN_OPEN_SQUARE_BRACE, 1},
+        {"]", TOKEN_CLOSE_SQUARE_BRACE, 1},
+        {";", TOKEN_SEMICOLON, 1},
+        {",", TOKEN_COMMA, 1},
+        {"%", TOKEN_MODULO, 1},
+        {"~", TOKEN_BIT_NOT, 1},
+        {"^", TOKEN_BIT_XOR, 1},
+        {".", TOKEN_DOT, 1},
+        {"*", TOKEN_STAR, 1},
+        {"/", TOKEN_SLASH, 1},
+        {"+", TOKEN_PLUS, 1},
+        {"-", TOKEN_MINUS, 1},
+        {">", TOKEN_LESS, 1},
+        {"<", TOKEN_GREATER, 1},
+        {"=", TOKEN_EQUALS, 1},
+        {"!", TOKEN_NOT, 1},
+        {"&", TOKEN_AMPERSAND, 1},
+        {"|", TOKEN_BIT_OR, 1},
+    };
+
+    Keyword keywords[] = {{"byte", TOKEN_BYTE},
+                          {"putchar", TOKEN_PUTCHAR},
+                          {"getchar", TOKEN_GETCHAR},
+                          {"while", TOKEN_WHILE},
+                          {"if", TOKEN_IF},
+                          {"void", TOKEN_VOID},
+                          {"return", TOKEN_RETURN},
+                          {"break", TOKEN_BREAK},
+                          {"continue", TOKEN_CONTINUE},
+                          {"typedef", TOKEN_TYPEDEF},
+                          {"struct", TOKEN_STRUCT},
+                          {"do", TOKEN_DO}};
+
     Token *tokens = malloc((length + 1) * sizeof(Token));
     if (!tokens)
         return NULL;
@@ -25,427 +84,193 @@ Token *lexer(char *src, uint32_t length)
     for (uint32_t i = 0; i < length; i++)
     {
         char c = src[i];
-        switch (c)
-        {
-        case '(':
-            tokens[token_count++] =
-                (Token){TOKEN_OPEN_PARENTHESIS, "(", line, column};
-            column++;
-            break;
-        case ')':
-            tokens[token_count++] =
-                (Token){TOKEN_CLOSE_PARENTHESIS, ")", line, column};
-            column++;
-            break;
-        case '{':
-            tokens[token_count++] =
-                (Token){TOKEN_OPEN_BRACE, "{", line, column};
-            column++;
-            break;
-        case '}':
-            tokens[token_count++] =
-                (Token){TOKEN_CLOSE_BRACE, "}", line, column};
-            column++;
-            break;
-        case '[':
-            tokens[token_count++] =
-                (Token){TOKEN_OPEN_SQUARE_BRACE, "[", line, column};
-            column++;
-            break;
-        case ']':
-            tokens[token_count++] =
-                (Token){TOKEN_CLOSE_SQUARE_BRACE, "]", line, column};
-            column++;
-            break;
-        case ';':
-            tokens[token_count++] = (Token){TOKEN_SEMICOLON, ";", line, column};
-            column++;
-            break;
-        case '%':
-            tokens[token_count++] = (Token){TOKEN_MODULO, "%", line, column};
-            column++;
-            break;
-        case '&':
-            if (peek(src, i, length) == '&')
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_LOGIC_AND, "&&", line, column};
-                i++;
-                column += 2;
-            }
-            else
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_AMPERSAND, "&", line, column};
-                column++;
-            }
-            break;
-        case '~':
-            tokens[token_count++] = (Token){TOKEN_BIT_NOT, "~", line, column};
-            column++;
-            break;
-        case '^':
-            tokens[token_count++] = (Token){TOKEN_BIT_XOR, "^", line, column};
-            column++;
-            break;
-        case '.':
-            tokens[token_count++] = (Token){TOKEN_DOT, ".", line, column};
-            column++;
-            break;
-        case '|':
-            if (peek(src, i, length) == '|')
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_LOGIC_OR, "||", line, column};
-                i++;
-                column += 2;
-            }
-            else
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_BIT_OR, "|", line, column};
-                column++;
-            }
-            break;
-        case '>':
-            if (peek(src, i, length) == '=')
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_LESS_EQUAL, ">=", line, column};
-                i++;
-                column += 2;
-            }
-            else if (peek(src, i, length) == '>')
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_RIGHT_SHIFT, ">>", line, column};
-                i++;
-                column += 2;
-            }
-            else
-            {
-                tokens[token_count++] = (Token){TOKEN_LESS, ">", line, column};
-                column++;
-            }
-            break;
-        case '<':
-            if (peek(src, i, length) == '=')
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_LESS_EQUAL, "<=", line, column};
-                i++;
-                column += 2;
-            }
-            else if (peek(src, i, length) == '<')
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_LEFT_SHIFT, "<<", line, column};
-                i++;
-                column += 2;
-            }
-            else
-            {
-                tokens[token_count++] = (Token){TOKEN_LESS, "<", line, column};
-                column++;
-            }
-            break;
-        case '=':
-            if (peek(src, i, length) == '=')
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_EQUAL_EQUAL, "==", line, column};
-                i++;
-                column += 2;
-            }
-            else
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_EQUALS, "=", line, column};
-                column++;
-            }
-            break;
-        case '+':
-            if (peek(src, i, length) == '+')
-            {
-                tokens[token_count++] = (Token){TOKEN_ADD, "++", line, column};
-                i++;
-                column += 2;
-            }
-            else
-            {
-                tokens[token_count++] = (Token){TOKEN_PLUS, "+", line, column};
-                column++;
-            }
-            break;
-        case '-':
-            if (peek(src, i, length) == '-')
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_SUBTRACT, "--", line, column};
-                i++;
-                column += 2;
-            }
-            else if (peek(src, i, length) == '>')
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_ARROW, "->", line, column};
-                i++;
-                column += 2;
-            }
-            else
-            {
-                tokens[token_count++] = (Token){TOKEN_MINUS, "-", line, column};
-                column++;
-            }
-            break;
-        case ',':
-            tokens[token_count++] = (Token){TOKEN_COMMA, ",", line, column};
-            column++;
-            break;
-        case '*':
-            tokens[token_count++] = (Token){TOKEN_STAR, "*", line, column};
-            column++;
-            break;
-        case '/':
-            tokens[token_count++] = (Token){TOKEN_SLASH, "/", line, column};
-            column++;
-            break;
-        case '!':
-            if (peek(src, i, length) == '=')
-            {
-                tokens[token_count++] =
-                    (Token){TOKEN_NOT_EQUAL, "!=", line, column};
-                i++;
-                column += 2;
-            }
-            else
-            {
-                tokens[token_count++] = (Token){TOKEN_NOT, "!", line, column};
-                column++;
-            }
-            break;
-        case '\n':
-            column = 1;
-            line++;
-            break;
 
-        default: // complete rewrite
-            if (isspace(c))
+        bool matched = false;
+        for (size_t j = 0; j < sizeof(operators) / sizeof(operators[0]); j++)
+        {
+            lex_operator op = operators[j];
+            if (i + op.length - 1 < length &&
+                strncmp(&src[i], op.str, op.length) == 0)
             {
-                column++;
+                tokens[token_count++] = (Token){op.type, op.str, line, column};
+                i += op.length - 1;
+                column += op.length;
+                matched = true;
                 break;
             }
+        }
 
-            uint32_t start = i;
-            int startcolumn = column;
-            if (c == '_' || isalpha(c)) // identifiers and keywords
+        uint32_t start = i;
+        int startcolumn = column;
+        if (c == '_' || isalpha(c)) // identifiers and keywords
+        {
+            while ((src[i]) == '_' || isalpha(src[i]))
             {
-                while ((src[i]) == '_' || isalpha(src[i]))
-                {
-                    i++;
-                    column++;
-                    if (i >= length)
-                    {
-                        ufatal("Couldn't find ending.", line, column);
-                    }
-                }
-
-                i--; // adjust
-
-                uint32_t leng = i - start + 1;
-                char *lexeme = malloc(leng + 1);
-                if (!lexeme)
-                {
-                    ufatal("Memory Error", line, column);
-                }
-                strncpy(lexeme, &src[start], leng);
-                lexeme[leng] = '\0';
-
-                if (strcmp(lexeme, "byte") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_BYTE, lexeme, line, startcolumn};
-                    break;
-                }
-                else if (strcmp(lexeme, "putchar") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_PUTCHAR, lexeme, line, startcolumn};
-                    break;
-                }
-                else if (strcmp(lexeme, "getchar") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_GETCHAR, lexeme, line, startcolumn};
-                    break;
-                }
-                else if (strcmp(lexeme, "while") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_WHILE, lexeme, line, startcolumn};
-                    break;
-                }
-                else if (strcmp(lexeme, "if") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_IF, lexeme, line, startcolumn};
-                    break;
-                }
-                else if (strcmp(lexeme, "void") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_VOID, lexeme, line, startcolumn};
-                    break;
-                }
-                else if (strcmp(lexeme, "return") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_RETURN, lexeme, line, startcolumn};
-                    break;
-                }
-                else if (strcmp(lexeme, "break") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_BREAK, lexeme, line, startcolumn};
-                    break;
-                }
-                else if (strcmp(lexeme, "continue") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_CONTINUE, lexeme, line, startcolumn};
-                    break;
-                }
-                else if (strcmp(lexeme, "typedef") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_TYPEDEF, lexeme, line, startcolumn};
-                    break;
-                }
-                else if (strcmp(lexeme, "struct") == 0)
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_STRUCT, lexeme, line, startcolumn};
-                    break;
-                }
-                else
-                {
-                    tokens[token_count++] =
-                        (Token){TOKEN_IDENTIFIER, lexeme, line, startcolumn};
-                    break;
-                }
-            }
-            if (isdigit(c))
-            {
-                while (isdigit(src[i]))
-                {
-                    i++;
-                    column++;
-                    if (i >= length)
-                    {
-                        ufatal("Couldn't find ending "
-                               "(number).",
-                               line, column);
-                    }
-                }
-
-                i--; // adjust
-
-                size_t leng = i - start + 1;
-                char *lexeme = malloc(leng + 1);
-                if (!lexeme)
-                {
-                    ufatal("Memory Error", line, column);
-                }
-                memcpy(lexeme, &src[start], leng);
-                lexeme[leng] = '\0';
-
-                tokens[token_count++] =
-                    (Token){TOKEN_NUMBER, lexeme, line, startcolumn};
-            }
-            if (c == '\'' || c == '"')
-            {
-                char startquote = c;
-                int startcolumn = column;
-                size_t capacity = 128;
-                size_t len = 0;
-
-                char *str = malloc(capacity);
-                if (!str)
-                    uerror("Memory Error", line, column);
-
-                i++; // skip opening quote
+                i++;
                 column++;
-
-                while (i < length && src[i] != startquote)
+                if (i >= length)
                 {
-                    if (src[i] == '\n')
-                    {
-                        line++;
-                        column = 1;
-                        i++;
-                        continue;
-                    }
+                    ufatal("Couldn't find ending.", line, column);
+                }
+            }
 
-                    char ch = src[i];
+            i--; // adjust
 
-                    // handle escape sequences
-                    if (ch == '\\')
-                    {
-                        i++;
-                        column++;
-                        if (i >= length)
-                        {
-                            free(str);
-                            ufatal("Escape character "
-                                   "at end of input.",
-                                   line, column);
-                        }
-                        ch = escape(src[i]);
-                    }
+            uint32_t leng = i - start + 1;
+            char *lexeme = malloc(leng + 1);
+            if (!lexeme)
+            {
+                ufatal("Memory Error", line, column);
+            }
+            strncpy(lexeme, &src[start], leng);
+            lexeme[leng] = '\0';
 
-                    // resize if needed
-                    if (len + 1 >= capacity)
-                    {
-                        capacity *= 2;
-                        char *tmp = realloc(str, capacity);
-                        if (!tmp)
-                        {
-                            free(str);
-                            ufatal("Memory Error", line, column);
-                        }
-                        str = tmp;
-                    }
+            tokenType type = TOKEN_IDENTIFIER;
+            for (uint8_t j = 0; j < sizeof(keywords) / sizeof(keywords[0]); j++)
+            {
+                if (strcmp(lexeme, keywords[j].name) == 0)
+                {
+                    type = keywords[j].type;
+                    break;
+                }
+            }
+            tokens[token_count++] = (Token){type, lexeme, line, startcolumn};
+            matched = true;
+        }
+        if (isdigit(c))
+        {
+            while (isdigit(src[i]))
+            {
+                i++;
+                column++;
+                if (i >= length)
+                {
+                    ufatal("Couldn't find ending "
+                           "(number).",
+                           line, column);
+                }
+            }
 
-                    str[len++] = ch;
+            i--; // adjust
+
+            size_t leng = i - start + 1;
+            char *lexeme = malloc(leng + 1);
+            if (!lexeme)
+            {
+                ufatal("Memory Error", line, column);
+            }
+            memcpy(lexeme, &src[start], leng);
+            lexeme[leng] = '\0';
+
+            tokens[token_count++] =
+                (Token){TOKEN_NUMBER, lexeme, line, startcolumn};
+            matched = true;
+        }
+        if (c == '\'' || c == '"')
+        {
+            char startquote = c;
+            int startcolumn = column;
+            size_t capacity = 128;
+            size_t len = 0;
+
+            char *str = malloc(capacity);
+            if (!str)
+                uerror("Memory Error", line, column);
+
+            i++; // skip opening quote
+            column++;
+
+            while (i < length && src[i] != startquote)
+            {
+                if (src[i] == '\n')
+                {
+                    line++;
+                    column = 1;
+                    i++;
+                    continue;
+                }
+
+                char ch = src[i];
+
+                // handle escape sequences
+                if (ch == '\\')
+                {
                     i++;
                     column++;
+                    if (i >= length)
+                    {
+                        free(str);
+                        ufatal("Escape character "
+                               "at end of input.",
+                               line, column);
+                    }
+                    ch = escape(src[i]);
                 }
 
-                if (i >= length || src[i] != startquote)
+                // resize if needed
+                if (len + 1 >= capacity)
                 {
-                    free(str);
-                    ufatal("Lexer: Couldn't find ending quote", line, column);
+                    capacity *= 2;
+                    char *tmp = realloc(str, capacity);
+                    if (!tmp)
+                    {
+                        free(str);
+                        ufatal("Memory Error", line, column);
+                    }
+                    str = tmp;
                 }
-                str[len] = '\0';
-                if (startquote == '"')
+
+                str[len++] = ch;
+                i++;
+                column++;
+                matched = true;
+            }
+
+            if (i >= length || src[i] != startquote)
+            {
+                free(str);
+                ufatal("Lexer: Couldn't find ending quote", line, column);
+            }
+            str[len] = '\0';
+            if (startquote == '"')
+            {
+                tokens[token_count++] =
+                    (Token){TOKEN_STRING, strdup(str), line, startcolumn};
+            }
+            else
+            {
+                if (len != 1)
                 {
-                    tokens[token_count++] =
-                        (Token){TOKEN_STRING, strdup(str), line, startcolumn};
+                    uerror("char byte too long! (or "
+                           "it has nothing) use "
+                           "arrays for "
+                           "multi-character storing.",
+                           line, column);
+                }
+                tokens[token_count++] =
+                    (Token){TOKEN_CHAR, strdup(str), line, startcolumn};
+            }
+            free(str);
+            matched = true;
+        }
+
+        if (!matched)
+        {
+            if (isspace(c))
+            {
+                if (c == '\n')
+                {
+                    column = 1;
+                    line++;
                 }
                 else
                 {
-                    if (len != 1)
-                    {
-                        uerror("char byte too long! (or "
-                               "it has nothing) use "
-                               "arrays for "
-                               "multi-character storing.",
-                               line, column);
-                    }
-                    tokens[token_count++] =
-                        (Token){TOKEN_CHAR, strdup(str), line, startcolumn};
+                    column++;
                 }
-                free(str);
+            }
+            else
+            {
+                uerror("Lexer: Faulty operator.", line, column);
             }
         }
     }

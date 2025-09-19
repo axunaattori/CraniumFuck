@@ -19,8 +19,8 @@ const char *token_type_to_string(tokenType type)
         CASE(TOKEN_COMMA)
 
         // math related and operators
-        CASE(TOKEN_ADD)      //++
-        CASE(TOKEN_SUBTRACT) //--
+        CASE(TOKEN_INCREMENT) //++
+        CASE(TOKEN_DECREMENT) //--
         CASE(TOKEN_EQUALS)
         CASE(TOKEN_PLUS)
         CASE(TOKEN_MINUS)
@@ -56,6 +56,7 @@ const char *token_type_to_string(tokenType type)
         CASE(TOKEN_RETURN)
         CASE(TOKEN_IF)
         CASE(TOKEN_ELSE)
+        CASE(TOKEN_DO)
         CASE(TOKEN_BREAK)
         CASE(TOKEN_CONTINUE)
         CASE(TOKEN_TYPEDEF)
