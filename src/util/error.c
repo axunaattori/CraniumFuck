@@ -3,25 +3,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void
-errorprint (char *text, uint32_t line, uint32_t column)
+static bool error_flag = false;
+
+bool get_error_flag() { return error_flag; }
+
+void errorprint(char *text, uint32_t line, uint32_t column)
 {
-    printf ("%s\n", text);
-    printf ("line: %" PRIu32 "\n", line);
-    printf ("column: %" PRIu32 "\n", column);
+    printf("%s\n", text);
+    printf("line: %" PRIu32 "\n", line);
+    printf("column: %" PRIu32 "\n", column);
 }
 
-void
-uwarning (char *text, uint32_t line, uint32_t column)
+void uwarning(char *text, uint32_t line, uint32_t column)
 {
-    printf (YELLOW "WARNING:\n" RESET);
-    errorprint (text, line, column);
+    printf(YELLOW "WARNING:\n" RESET);
+    errorprint(text, line, column);
 }
 
-void
-uerror (char *text, uint32_t line, uint32_t column)
+void uerror(char *text, uint32_t line, uint32_t column)
 {
-    printf (RED "ERROR:\n" RESET);
-    errorprint (text, line, column);
-    exit (1);
+    printf(RED "ERROR:\n" RESET);
+    errorprint(text, line, column);
+    error_flag = true;
+}
+
+// while errors are still fatal
+// (quitting once processing it all so the user doesnt have to keep compiling),
+// ufatal tells us that something is so fucked up that it cannot continue
+// processing it anymore.
+void ufatal(char *text, uint32_t line, uint32_t column)
+{
+    printf(RED "!!FATAL!!:\n" RESET);
+    errorprint(text, line, column);
+    exit(1);
 }

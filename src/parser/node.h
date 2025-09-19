@@ -122,24 +122,23 @@ typedef struct Node
     };
 } Node;
 
-Node *create_constant_node (uint8_t value, uint32_t line, uint32_t column);
-Node *create_identifier_node (const char *name, uint32_t line,
-                              uint32_t column);
-Node *create_assign_node (const char *name, Node *value, uint32_t line,
-                          uint32_t column);
-Node *create_binary_node (Node *left, Node *right, operator op, uint32_t line,
-                          uint32_t column);
-Node *create_unary_node (Node *operand, operator op, uint32_t line,
+Node *create_constant_node(uint8_t value, uint32_t line, uint32_t column);
+Node *create_identifier_node(const char *name, uint32_t line, uint32_t column);
+Node *create_assign_node(const char *name, Node *value, uint32_t line,
                          uint32_t column);
-Node *create_var_dec_node (const char *name, Node *type, Node *init,
-                           uint32_t line, uint32_t column);
+Node *create_binary_node(Node *left, Node *right, operator op, uint32_t line,
+                         uint32_t column);
+Node *create_unary_node(Node *operand, operator op, uint32_t line,
+                        uint32_t column);
+Node *create_var_dec_node(const char *name, Node *type, Node *init,
+                          uint32_t line, uint32_t column);
 // type is unuseable for now. but will be in the function for future me. so i
 // dont have to replace it everywhere
-Node *create_block_node (Node **statements, size_t size, uint32_t line,
-                         uint32_t column);
-Node *create_while_node (Node *condition, Node *body, uint32_t line,
-                         uint32_t column);
-Node *create_function_node (const char *name, Node **arguments, size_t size,
-                            Node *body, uint32_t line, uint32_t column);
+Node *create_block_node(Node **statements, size_t size, uint32_t line,
+                        uint32_t column);
+Node *create_while_node(Node *condition, Node *body, uint32_t line,
+                        uint32_t column);
+Node *create_function_node(const char *name, Node **arguments, size_t size,
+                           Node *body, uint32_t line, uint32_t column);
 
 #endif

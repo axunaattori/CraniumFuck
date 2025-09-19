@@ -2,6 +2,7 @@
 #include "lexer/lexer.h"
 #include "lexer/token.h"
 #include "preprocessor/preprocessor.h"
+#include "util/error.h"
 #include "version.h"
 #include <stdio.h>
 #include <string.h>
@@ -30,35 +31,40 @@ char source[] = "void main()\n"
 #define CMAKE_COMPILER_VERSION "Unknown"
 #endif
 
-int
-main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-    printf ("CF %d.%d compiled at %s %s, with %s %s\n", VERSION_MAJOR,
-            VERSION_MINOR, __DATE__, __TIME__, CMAKE_COMPILER_NAME,
-            CMAKE_COMPILER_VERSION);
-    preprocessor (source, strlen (source));
+    printf("CF %d.%d compiled at %s %s, with %s %s\n", VERSION_MAJOR,
+           VERSION_MINOR, __DATE__, __TIME__, CMAKE_COMPILER_NAME,
+           CMAKE_COMPILER_VERSION);
+    preprocessor(source, strlen(source));
 
-    printf ("Preprocessing Done!\n");
+    printf("Preprocessing Done!\n");
 
-    Token *tokens = lexer (source, strlen (source));
+    Token *tokens = lexer(source, strlen(source));
 
     if (tokens == NULL)
-        {
-            printf ("Lexer: Build failed");
-            return 1;
-        }
+    {
+        printf("Lexer: Build failed");
+        return 1;
+    }
 
 #if PRINTDEBUG
     for (int i = 0; tokens[i].type != TOKEN_EOF; i++)
-        {
-            printf ("type = %s, lexeme = %s, line = %d, column = %d\n",
-                    token_type_to_string (tokens[i].type), tokens[i].lexeme,
-                    tokens[i].line, tokens[i].column);
-        }
+    {
+        printf("type = %s, lexeme = %s, line = %d, column = %d\n",
+               token_type_to_string(tokens[i].type), tokens[i].lexeme,
+               tokens[i].line, tokens[i].column);
+    }
 #endif
-    printf ("Lexering Done!\n");
+    printf("Lexering Done!\n");
 
-    printf ("Done building.");
+    if (get_error_flag() == true)
+    {
+        printf("Building has failed");
+        return 1;
+    }
+
+    printf("Done building.");
 
     return 0;
 }

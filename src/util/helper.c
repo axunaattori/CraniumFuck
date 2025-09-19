@@ -1,33 +1,31 @@
 #include "helper.h"
 
-char
-escape (char c)
+char escape(char c) // TODO: add hex \x69, octal \69
 {
     switch (c)
-        {
-        case 'n':
-            return '\n';
-        case 't':
-            return '\t';
-        case '\\':
-            return '\\';
-        case '"':
-            return '"';
-        case '\'':
-            return '\'';
-        case 'b':
-            return '\b';
-        case 'r':
-            return '\r';
-        case 'f':
-            return '\f';
-        default:
-            return c;
-        }
+    {
+    case 'n':
+        return '\n';
+    case 't':
+        return '\t';
+    case '\\':
+        return '\\';
+    case '"':
+        return '"';
+    case '\'':
+        return '\'';
+    case 'b':
+        return '\b';
+    case 'r':
+        return '\r';
+    case 'f':
+        return '\f';
+    default:
+        return c;
+    }
 }
 
-char
-peek (char *src, uint32_t i, size_t len)
+char peek(char *src, uint32_t i, size_t len)
 {
     if (i + 1 >= len)
         return '\0';

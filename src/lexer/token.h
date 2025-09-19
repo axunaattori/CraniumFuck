@@ -78,6 +78,6 @@ typedef struct
     int column;
 } Token;
 
-const char *token_type_to_string (tokenType type);
+const char *token_type_to_string(tokenType type);
 
 #endif

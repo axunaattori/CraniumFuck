@@ -3,10 +3,10 @@
 
 #include <stdint.h>
 
-char *pptime ();
+char *pptime();
 
-char *ppdate ();
+char *ppdate();
 
-char *ppversion ();
+char *ppversion();
 
 #endif
