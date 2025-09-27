@@ -1,6 +1,7 @@
 #include "config.h"
 #include "lexer/lexer.h"
 #include "lexer/token.h"
+#include "parser/parser.h"
 #include "preprocessor/preprocessor.h"
 #include "util/error.h"
 #include "version.h"
@@ -40,11 +41,12 @@ int main(int argc, char *argv[])
 
     printf("Preprocessing Done!\n");
 
-    Token *tokens = lexer(source, strlen(source));
+    size_t token_amount;
+    Token *tokens = lexer(source, strlen(source), &token_amount);
 
     if (tokens == NULL)
     {
-        printf("Lexer: Build failed");
+        printf("Lexer: Build failed, Returned NULL for tokens.");
         return 1;
     }
 
@@ -58,6 +60,7 @@ int main(int argc, char *argv[])
 #endif
     printf("Lexering Done!\n");
 
+    Parser *p = create_parser(tokens, token_amount);
     if (get_error_flag() == true)
     {
         printf("Building has failed");

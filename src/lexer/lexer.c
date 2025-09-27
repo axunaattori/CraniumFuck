@@ -10,7 +10,8 @@
 
 #include "token.h"
 
-Token *lexer(char *src, uint32_t length)
+Token *lexer(char *src, uint32_t length,
+             size_t *token_amount) // token_amount for parser
 {
     typedef struct
     {
@@ -276,6 +277,8 @@ Token *lexer(char *src, uint32_t length)
     }
 
     tokens[token_count++] = (Token){TOKEN_EOF, "EOF", line, column};
+
+    *token_amount = (size_t)token_count;
 
     return tokens;
 }

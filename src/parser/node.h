@@ -67,6 +67,7 @@ typedef enum
 
 typedef struct Node
 {
+    node_type type;
     uint32_t column;
     uint32_t line;
     union
