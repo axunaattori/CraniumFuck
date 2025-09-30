@@ -135,6 +135,7 @@ Node *parse(Parser *p)
 {
     if (p->tokens[p->pos].type == TOKEN_BYTE)
     {
+        return parse_token_byte(p);
     }
     else if (p->tokens[p->pos].type == TOKEN_VOID)
     {
