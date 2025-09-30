@@ -10,7 +10,7 @@
 
 char source[] = "void main()\n"
                 "{\n"
-                "byte terms = 13;\n"
+                "byte terms = ;\n"
                 "byte a = 0; byte b = 1; byte next;\n"
                 "\n"
                 "while(terms)\n"
@@ -64,12 +64,7 @@ int main(int argc, char *argv[])
 
     size_t node_count = 0;
     Node **ast_nodes = parsing_loop(p, &node_count);
-#if PRINTDEBUG
-    for (size_t i = 0; i < node_count; i++)
-    {
-        print_node(ast_nodes[i], 0);
-    }
-#endif
+
     if (get_error_flag() == true)
     {
         printf("Building has failed");
