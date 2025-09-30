@@ -10,7 +10,7 @@
 
 char source[] = "void main()\n"
                 "{\n"
-                "byte terms = ;\n"
+                "byte terms = 13;\n"
                 "byte a = 0; byte b = 1; byte next;\n"
                 "\n"
                 "while(terms)\n"
