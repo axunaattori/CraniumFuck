@@ -11,7 +11,7 @@
 char source[] = "void main()\n"
                 "{\n"
                 "byte terms = 13;\n"
-                "byte a = 0, b = 1, next;\n"
+                "byte a = 0; byte b = 1; byte next;\n"
                 "\n"
                 "while(terms)\n"
                 "{\n"
@@ -61,12 +61,27 @@ int main(int argc, char *argv[])
     printf("Lexering Done!\n");
 
     Parser *p = create_parser(tokens, token_amount);
+
+    size_t node_count = 0;
+    Node **ast_nodes = parsing_loop(p, &node_count);
+#if PRINTDEBUG
+    for (size_t i = 0; i < node_count; i++)
+    {
+        print_node(ast_nodes[i], 0);
+    }
+#endif
     if (get_error_flag() == true)
     {
         printf("Building has failed");
         return 1;
     }
-
+    printf("Parsing done!\n");
+#if PRINTDEBUG
+    for (size_t i = 0; i < node_count; i++)
+    {
+        print_node(*ast_nodes, 0);
+    }
+#endif
     printf("Done building.");
 
     return 0;

@@ -7,8 +7,7 @@
 // By default its 30000.
 #define ARRAYSIZE 30000
 
-// amount of temp cells in the start
-// for math and such.
-#define TEMPCELLS 5
+// error printing limit
+#define ERRORLIMIT 5
 
 #endif
