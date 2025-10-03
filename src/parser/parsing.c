@@ -1,8 +1,35 @@
 #include "parsing.h"
+#include "lexer/token.h"
 #include "node.h"
 #include "parser.h"
 #include "util/error.h"
 #include <stdlib.h>
+
+// TODO: important!! get condition
+Node *parse_condition(Parser *p)
+{
+    eat(p, TOKEN_OPEN_PARENTHESIS);
+    // do it here
+    eat(p, TOKEN_CLOSE_PARENTHESIS);
+}
+
+/* follow this order (comment also exists in node.h)
+ * 1: () . X++ X-- -> []                L -> R
+ * 2: ++X --X !X ~X *X (derefernce) &X  R -> L
+ * 3: * / %                             L -> R
+ * 4: + -
+ * 5: << >>
+ * 6: < <= > >=
+ * 7: == !=
+ * 8: &
+ * 9: ^
+ * 10: |
+ * 11: &&
+ * 12: ||
+ * The language wont support 13 (?:) for now
+ * 14: = (and those += -= if im not too lazy) R -> L
+ * 15: ,    L -> R
+ */
 
 Node *parse_block(Parser *p)
 {
@@ -145,4 +172,13 @@ Node *parse_token_byte(Parser *p)
 
     return create_var_dec_node(identifier, type, init, start->line,
                                start->column);
+}
+
+Node *parse_token_while(Parser *p)
+{
+    Token *start = current_token(p);
+    eat(p, TOKEN_WHILE);
+
+    Node *block = parse_block(p);
+    return create_while_node(NULL, block, start->line, start->column);
 }

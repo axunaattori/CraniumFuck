@@ -153,7 +153,7 @@ void preprocessor(char *src, uint32_t length)
             break;
         }
         default:
-            // todo: add function to check for defined stuff and
+            // TODO: add function to check for defined stuff and
             // expand them
             break;
         }

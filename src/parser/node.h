@@ -42,8 +42,10 @@ typedef enum
     // unary
     OP_LOGIC_NOT, // !variable
     OP_BIT_NOT,   // ~variable
-    OP_INC,       //++
-    OP_DEC,       //--
+    OP_POST_INC,  // variable++
+    OP_POST_DEC,  // variable--
+    OP_PRE_INC,   // ++varaible
+    OP_PRE_DEC,   // --variable
     OP_ADDRESS,   // &variable
     OP_DEFERENCE  // *variable
 } operator;
@@ -92,7 +94,7 @@ typedef struct Node
         struct
         {
             struct Node *operand;
-            operator op; //++ for +, -- for -, others have 1 char
+            operator op;
         } unary;
 
         struct
