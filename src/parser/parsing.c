@@ -2,15 +2,18 @@
 #include "lexer/token.h"
 #include "node.h"
 #include "parser.h"
+#include "parser/expression.h"
 #include "util/error.h"
 #include <stdlib.h>
 
 // TODO: important!! get condition
+
 Node *parse_condition(Parser *p)
 {
     eat(p, TOKEN_OPEN_PARENTHESIS);
-    // do it here
+    Node *condition = parse_expression(p);
     eat(p, TOKEN_CLOSE_PARENTHESIS);
+    return condition;
 }
 
 /* follow this order (comment also exists in node.h)
@@ -55,7 +58,7 @@ Node *parse_block(Parser *p)
         }
     }
 
-    if (current_token(p)->type == TOKEN_EOF)
+    if (match(p, TOKEN_EOF))
     {
         ufatal("You failed to add a '}', it has reached the EOF token, "
                "which is really really bad",
@@ -100,7 +103,7 @@ Node **parse_parameters(Parser *p, size_t *size)
             params = temp;
             params[count++] = param;
 
-            if (current_token(p)->type == TOKEN_COMMA)
+            if (match(p, TOKEN_COMMA))
             {
                 eat(p, TOKEN_COMMA);
             }
@@ -111,7 +114,7 @@ Node **parse_parameters(Parser *p, size_t *size)
         }
     }
 
-    if (current_token(p)->type == TOKEN_EOF)
+    if (match(p, TOKEN_EOF))
     {
         ufatal("You failed to add a ')', it has reached the EOF token, "
                "which is really really bad",
@@ -146,7 +149,7 @@ Node *parse_token_byte(Parser *p)
     const char *identifier = p->tokens[p->pos].lexeme;
     eat(p, TOKEN_IDENTIFIER);
 
-    if (current_token(p)->type == TOKEN_OPEN_PARENTHESIS)
+    if (match(p, TOKEN_OPEN_PARENTHESIS))
     // it just happens to be a function instead of a variable
     {
         size_t size = 0;
@@ -157,10 +160,10 @@ Node *parse_token_byte(Parser *p)
     }
 
     Node *init = NULL;
-    if (current_token(p)->type == TOKEN_EQUALS)
+    if (match(p, TOKEN_EQUALS))
     {
         eat(p, TOKEN_EQUALS);
-        if (current_token(p)->type == TOKEN_NUMBER)
+        if (match(p, TOKEN_NUMBER))
         {
             Token *num = current_token(p);
             init = create_constant_node((uint8_t)atoi(num->lexeme), num->line,

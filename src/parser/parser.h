@@ -4,6 +4,7 @@
 #include "config.h"
 #include "lexer/token.h"
 #include "parser/node.h"
+#include <stdbool.h>
 #include <stddef.h>
 
 typedef struct
@@ -18,8 +19,13 @@ void print_node(Node *node, int indent);
 #endif
 
 void eat(Parser *p, tokenType expect);
-void eat_err(Parser *p, tokenType expect, char *error_msg);
 // eat but with custom errors
+void eat_err(Parser *p, tokenType expect, char *error_msg);
+// returns true if expect = current_token at parser *p
+bool match(Parser *p, tokenType expect);
+// match but it also eats
+bool match_eat(Parser *p, tokenType expect);
+Token *previous_token(Parser *p);
 Token *current_token(Parser *p);
 Parser *create_parser(Token *tokens, size_t token_count);
 Node *parse(Parser *p);

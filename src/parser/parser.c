@@ -3,6 +3,7 @@
 #include "parser/node.h"
 #include "parser/parsing.h"
 #include "util/error.h"
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -85,6 +86,23 @@ void eat_err(Parser *p, tokenType expect, char *error_msg)
     }
 }
 
+bool match(Parser *p, tokenType expect)
+{
+    if (current_token(p)->type != expect)
+        return false;
+    return true;
+}
+
+bool match_eat(Parser *p, tokenType expect)
+{
+    if (match(p, expect))
+    {
+        eat(p, expect);
+        return true;
+    }
+    return false;
+}
+
 Token *current_token(Parser *p)
 {
     if (p->pos >= p->token_count)
@@ -92,6 +110,15 @@ Token *current_token(Parser *p)
         ufatal("Parser: pos is somehow bigger than token_count", -1, -1);
     }
     return &p->tokens[p->pos];
+}
+
+Token *previous_token(Parser *p)
+{
+    if (p->pos >= p->token_count)
+    {
+        ufatal("Parser: pos is somehow bigger than token_count", -1, -1);
+    }
+    return &p->tokens[p->pos - 1];
 }
 
 Parser *create_parser(Token *tokens, size_t token_count)

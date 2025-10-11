@@ -22,6 +22,7 @@ typedef enum // currently has the nodes required for the fibonacci test
 typedef enum
 {
     // binary
+    OP_COMMA,         // ,
     OP_ADD,           // +
     OP_SUB,           // -
     OP_MULTI,         // *
@@ -34,6 +35,7 @@ typedef enum
     OP_BIT_AND,       // &
     OP_BIT_OR,        // |
     OP_BIT_XOR,       // ^
+    OP_ASSIGN,        // =
     OP_EQUAL,         // ==
     OP_NOT_EQUAL,     // !=
     OP_LOGIC_AND,     // &&
@@ -47,7 +49,9 @@ typedef enum
     OP_PRE_INC,   // ++varaible
     OP_PRE_DEC,   // --variable
     OP_ADDRESS,   // &variable
-    OP_DEFERENCE  // *variable
+    OP_DEFERENCE, // *variable
+
+    OP_NONEXISTENT // just to make the function in expression.c happy
 } operator;
 
 /*
