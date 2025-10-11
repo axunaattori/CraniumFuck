@@ -11,6 +11,7 @@
 char source[] = "void main()\n"
                 "{\n"
                 "byte terms = 13;\n"
+                "byte test = \\x81;"
                 "byte a = 0; byte b = 1; byte next;\n"
                 "\n"
                 "while(terms)\n"
@@ -53,9 +54,10 @@ int main(int argc, char *argv[])
 #if PRINTDEBUG
     for (int i = 0; tokens[i].type != TOKEN_EOF; i++)
     {
-        printf("type = %s, lexeme = %s, line = %d, column = %d\n",
+        printf("type = %s, lexeme = %s (%X), line = %d, column = %d\n",
                token_type_to_string(tokens[i].type), tokens[i].lexeme,
-               tokens[i].line, tokens[i].column);
+               (unsigned char)tokens[i].lexeme[0], tokens[i].line,
+               tokens[i].column);
     }
 #endif
     printf("Lexering Done!\n");

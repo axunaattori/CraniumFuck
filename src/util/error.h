@@ -10,10 +10,10 @@
 
 bool get_error_flag();
 
-void uwarning(char *text, uint32_t line, uint32_t column);
+void uwarning(const char *text, uint32_t line, uint32_t column);
 
-void uerror(char *text, uint32_t line, uint32_t column);
+void uerror(const char *text, uint32_t line, uint32_t column);
 
-void ufatal(char *text, uint32_t line, uint32_t column);
+void ufatal(const char *text, uint32_t line, uint32_t column);
 
 #endif

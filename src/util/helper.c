@@ -1,8 +1,19 @@
 #include "helper.h"
+#include <ctype.h>
+#include <stdlib.h>
 
-char escape(char c) // TODO: add hex \x69, octal \69
+unsigned char escape(char *c)
 {
-    switch (c)
+    if (c[0] == 'x')
+    {
+        return strtol(c + 1, NULL, 16);
+    }
+    else if (isdigit(c[0]))
+    {
+        return strtol(c, NULL, 8);
+    }
+
+    switch (c[0])
     {
     case 'n':
         return '\n';
@@ -21,7 +32,7 @@ char escape(char c) // TODO: add hex \x69, octal \69
     case 'f':
         return '\f';
     default:
-        return c;
+        return c[0];
     }
 }
 

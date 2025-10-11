@@ -20,7 +20,7 @@ void print_node(Node *node, int indent);
 
 void eat(Parser *p, tokenType expect);
 // eat but with custom errors
-void eat_err(Parser *p, tokenType expect, char *error_msg);
+void eat_err(Parser *p, tokenType expect, const char *error_msg);
 // returns true if expect = current_token at parser *p
 bool match(Parser *p, tokenType expect);
 // match but it also eats

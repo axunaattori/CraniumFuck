@@ -74,7 +74,7 @@ void eat(Parser *p, tokenType expect)
     }
 }
 
-void eat_err(Parser *p, tokenType expect, char *error_msg)
+void eat_err(Parser *p, tokenType expect, const char *error_msg)
 {
     if (current_token(p)->type != expect)
     {

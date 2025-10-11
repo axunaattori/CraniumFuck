@@ -4,11 +4,60 @@
 
 #include <ctype.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "token.h"
+
+char parse_escape(char *src, uint32_t length, uint32_t *i, int line,
+                  int *column)
+{
+    (*i)++;
+    (*column)++;
+    uint8_t esc_size = 0;
+    char esc[5] = {0};
+
+    if (*i >= length)
+    {
+        ufatal("Escape character at end of input.", line, *column);
+    }
+
+    if (isdigit(src[*i]))
+    {
+        esc[esc_size++] = src[*i];
+        (*i)++;
+        (*column)++;
+        while (*i < length && isdigit(src[*i]) && esc_size < 4)
+        {
+            esc[esc_size++] = src[*i];
+            (*i)++;
+            (*column)++;
+        }
+        return escape(esc);
+    }
+    else if (src[*i] == 'x')
+    {
+        esc[esc_size++] = src[*i];
+        (*i)++;
+        (*column)++;
+        while (*i < length && isxdigit(src[*i]) && esc_size < 4)
+        {
+            esc[esc_size++] = src[*i];
+            (*i)++;
+            (*column)++;
+        }
+        return escape(esc);
+    }
+    else
+    {
+        esc[esc_size++] = src[*i];
+        (*column)++;
+        (*i)++;
+        return escape(esc);
+    }
+}
 
 Token *lexer(char *src, uint32_t length,
              size_t *token_amount) // token_amount for parser
@@ -176,7 +225,7 @@ Token *lexer(char *src, uint32_t length,
 
             char *str = malloc(capacity);
             if (!str)
-                uerror("Memory Error", line, column);
+                ufatal("Memory Error", line, column);
 
             i++; // skip opening quote
             column++;
@@ -193,38 +242,19 @@ Token *lexer(char *src, uint32_t length,
 
                 char ch = src[i];
 
-                // handle escape sequences
                 if (ch == '\\')
                 {
-                    i++;
-                    column++;
-                    if (i >= length)
-                    {
-                        free(str);
-                        ufatal("Escape character "
-                               "at end of input.",
-                               line, column);
-                    }
-                    ch = escape(src[i]);
+                    ch = parse_escape(src, length, &i, line, &column);
                 }
 
-                // resize if needed
                 if (len + 1 >= capacity)
                 {
                     capacity *= 2;
-                    char *tmp = realloc(str, capacity);
-                    if (!tmp)
-                    {
-                        free(str);
-                        ufatal("Memory Error", line, column);
-                    }
-                    str = tmp;
+                    str = realloc(str, capacity);
+                    if (!str)
+                        ufatal("Memory error", line, column);
                 }
-
                 str[len++] = ch;
-                i++;
-                column++;
-                matched = true;
             }
 
             if (i >= length || src[i] != startquote)
@@ -255,6 +285,18 @@ Token *lexer(char *src, uint32_t length,
             matched = true;
         }
 
+        if (c == '\\')
+        {
+            int startcolumn = column;
+            char lexeme[2];
+            lexeme[0] = parse_escape(src, length, &i, line, &column);
+            lexeme[1] = '\0';
+            tokens[token_count++] =
+                (Token){TOKEN_NUMBER, strdup(lexeme), line, startcolumn};
+            matched = true;
+            i--;
+            column--;
+        }
         if (!matched)
         {
             if (isspace(c))
