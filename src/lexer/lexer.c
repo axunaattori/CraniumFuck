@@ -138,10 +138,8 @@ Token *lexer(char *src, uint32_t length,
     uint32_t token_count = 0;
     int column = 1;
     int line = 1;
-    printf("debugging ass");
     for (uint32_t i = 0; i < length; i++)
     {
-        printf("%u", i);
         char c = src[i];
 
         bool matched = false;
