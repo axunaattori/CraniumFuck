@@ -2,6 +2,7 @@
 #define NODE_H
 #include <stddef.h>
 #include <stdint.h>
+#include <sys/types.h>
 
 typedef enum // currently has the nodes required for the fibonacci test
 {
@@ -12,12 +13,21 @@ typedef enum // currently has the nodes required for the fibonacci test
     NODE_BINARY, // + - /
     NODE_UNARY,  // -- ++
     NODE_VARDEC, // variable declartion
+    NODE_INDEX,  // [variable]
+    NODE_MEMBER, // . ->
 
     NODE_BLOCK,
     NODE_WHILE,
     NODE_FUNCTION,
     NODE_TYPE
 } node_type;
+
+typedef enum
+{
+    MEM_DOT,
+    MEM_ARROW,
+    MEM_NONEXISTENT
+} member_type;
 
 typedef enum
 {
@@ -40,6 +50,8 @@ typedef enum
     OP_NOT_EQUAL,     // !=
     OP_LOGIC_AND,     // &&
     OP_LOGIC_OR,      // ||
+    OP_LEFT_SHIFT,    // <<
+    OP_RIGHT_SHIFT,   // >>
 
     // unary
     OP_LOGIC_NOT, // !variable
@@ -103,6 +115,19 @@ typedef struct Node
 
         struct
         {
+            struct Node *base;
+            struct Node *index;
+        } index;
+
+        struct
+        {
+            struct Node *base;
+            const char *name;
+            member_type type;
+        } member;
+
+        struct
+        {
             const char *name;
             struct Node *type; // unused for now.
             struct Node *init;
@@ -139,6 +164,10 @@ Node *create_binary_node(Node *left, Node *right, operator op, uint32_t line,
                          uint32_t column);
 Node *create_unary_node(Node *operand, operator op, uint32_t line,
                         uint32_t column);
+Node *create_index_node(Node *base, Node *index, uint32_t line,
+                        uint32_t column);
+Node *create_member_node(struct Node *base, const char *name, member_type type,
+                         uint32_t line, uint32_t column);
 Node *create_var_dec_node(const char *name, Node *type, Node *init,
                           uint32_t line, uint32_t column);
 // type is unuseable for now. but will be in the function for future me. so i

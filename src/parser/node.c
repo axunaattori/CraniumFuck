@@ -68,6 +68,7 @@ Node *create_binary_node(Node *left, Node *right, operator op, uint32_t line,
                        .binary = {.left = left, .right = right, .op = op}};
     return new_node;
 }
+
 Node *create_unary_node(Node *operand, operator op, uint32_t line,
                         uint32_t column)
 {
@@ -80,6 +81,40 @@ Node *create_unary_node(Node *operand, operator op, uint32_t line,
                        .column = column,
                        .line = line,
                        .unary = {.operand = operand, .op = op}};
+    return new_node;
+}
+
+Node *create_index_node(Node *base, Node *index, uint32_t line, uint32_t column)
+{
+    Node *new_node = malloc(sizeof(Node));
+    if (!new_node)
+    {
+        ufatal("Failed to allocate memory for a unary Node", line, column);
+    };
+    *new_node = (Node){.type = NODE_INDEX,
+                       .column = column,
+                       .line = line,
+                       .index = {.base = base, .index = index}};
+    return new_node;
+}
+
+Node *create_member_node(struct Node *base, const char *name, member_type type,
+                         uint32_t line, uint32_t column)
+{
+    Node *new_node = malloc(sizeof(Node));
+    if (!new_node)
+    {
+        ufatal("Failed to allocate memory for a unary Node", line, column);
+    };
+    char *copy = strdup(name);
+    if (!copy)
+    {
+        ufatal("Failed to copy name of identifier", line, column);
+    }
+    *new_node = (Node){.type = NODE_MEMBER,
+                       .column = column,
+                       .line = line,
+                       .member = {.base = base, .name = copy, .type = type}};
     return new_node;
 }
 

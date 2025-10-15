@@ -6,8 +6,6 @@
 #include "util/error.h"
 #include <stdlib.h>
 
-// TODO: important!! get condition
-
 Node *parse_condition(Parser *p)
 {
     eat(p, TOKEN_OPEN_PARENTHESIS);
@@ -159,8 +157,9 @@ Node *parse_token_byte(Parser *p)
                                     start->line, start->column);
     }
 
-    Node *init = NULL;
-    if (match(p, TOKEN_EQUALS))
+    Node *init = parse_expression(p);
+
+    /*if (match(p, TOKEN_EQUALS))
     {
         eat(p, TOKEN_EQUALS);
         if (match(p, TOKEN_NUMBER))
@@ -171,7 +170,7 @@ Node *parse_token_byte(Parser *p)
         }
         eat_err(p, TOKEN_NUMBER, "You need to put an number after the =");
     }
-    eat(p, TOKEN_SEMICOLON);
+    eat(p, TOKEN_SEMICOLON);*/
 
     return create_var_dec_node(identifier, type, init, start->line,
                                start->column);
@@ -182,6 +181,7 @@ Node *parse_token_while(Parser *p)
     Token *start = current_token(p);
     eat(p, TOKEN_WHILE);
 
+    Node *condition = parse_condition(p);
     Node *block = parse_block(p);
-    return create_while_node(NULL, block, start->line, start->column);
+    return create_while_node(condition, block, start->line, start->column);
 }

@@ -36,13 +36,16 @@ const char *token_type_to_string(tokenType type)
         CASE(TOKEN_MODULO)        // %
         CASE(TOKEN_AMPERSAND)     // & address of and bit and
 
+        CASE(TOKEN_LOGIC_AND)
+        CASE(TOKEN_LOGIC_OR)
+
         // member access operators
         CASE(TOKEN_DOT)   // .
         CASE(TOKEN_ARROW) // ->
 
         // bitwise
         CASE(TOKEN_BIT_NOT)     // ~
-        CASE(TOKEN_BIT_OR)      // ||
+        CASE(TOKEN_BIT_OR)      // |
         CASE(TOKEN_BIT_XOR)     // ^
         CASE(TOKEN_LEFT_SHIFT)  // <<
         CASE(TOKEN_RIGHT_SHIFT) // >>

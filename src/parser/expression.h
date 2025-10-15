@@ -23,6 +23,12 @@
  * 15: ,    L -> R
  */
 
+member_type get_mem_type_enum(Token *token);
+
+operator get_op_enum_postfix(Token * token);
+operator get_op_enum_prefix(Token * token);
+// it's not the best way to do it but it works
+
 operator get_op_enum(Token * token);
 
 Node *parse_expression(Parser *p);
@@ -45,7 +51,7 @@ Node *parse_equal(Parser *p);
 
 Node *parse_inequality(Parser *p);
 
-Node *parse_bitwise_lr(Parser *p);
+Node *parse_bitwise_shift(Parser *p);
 
 Node *parse_addition(Parser *p);
 

@@ -18,9 +18,9 @@ typedef struct
 void print_node(Node *node, int indent);
 #endif
 
-void eat(Parser *p, tokenType expect);
+bool eat(Parser *p, tokenType expect);
 // eat but with custom errors
-void eat_err(Parser *p, tokenType expect, const char *error_msg);
+bool eat_err(Parser *p, tokenType expect, const char *error_msg);
 // returns true if expect = current_token at parser *p
 bool match(Parser *p, tokenType expect);
 // match but it also eats

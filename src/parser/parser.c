@@ -37,16 +37,41 @@ void print_node(Node *node, int indent)
                node->function.name, node->function.return_type->name,
                node->function.size);
         for (size_t i = 0; i < node->function.size; i++)
-            print_node(node->function.arguments[i], indent + 1);
-        print_node(node->function.body, indent + 1);
+            print_node(node->function.arguments[i], indent + 2);
+        print_node(node->function.body, indent + 2);
         break;
 
     case NODE_BLOCK:
         printf("BLOCK: %zu statements\n", node->block.size);
         for (size_t i = 0; i < node->block.size; i++)
-            print_node(node->block.statements[i], indent + 1);
+            print_node(node->block.statements[i], indent + 2);
         break;
-
+    case NODE_WHILE:
+        printf("WHILE, CONDITION:\n");
+        print_node(node->while_node.condition, indent + 2);
+        print_node(node->while_node.body, indent + 2);
+        break;
+    case NODE_BINARY:
+        printf("BINARY:\n");
+        for (int i = 0; i < indent; i++)
+            putchar(' ');
+        printf("LEFT:\n");
+        print_node(node->binary.left, indent + 2);
+        for (int i = 0; i < indent; i++)
+            putchar(' ');
+        printf("RIGHT:\n");
+        print_node(node->binary.right, indent + 2);
+        for (int i = 0; i < indent; i++)
+            putchar(' ');
+        printf("OPERATION: %d\n", node->binary.op);
+        break;
+    case NODE_UNARY:
+        printf("UNARY: %d\n", node->unary.op);
+        print_node(node->unary.operand, indent + 2);
+        break;
+    case NODE_IDENTIFIER:
+        printf("NODE_IDENTIFIER: %s\n", node->name);
+        break;
     default:
         printf("Unknown node type\n");
         break;
@@ -54,7 +79,7 @@ void print_node(Node *node, int indent)
 }
 #endif
 
-void eat(Parser *p, tokenType expect)
+bool eat(Parser *p, tokenType expect)
 {
     if (p->pos >= p->token_count)
     {
@@ -63,6 +88,7 @@ void eat(Parser *p, tokenType expect)
     if (p->tokens[p->pos].type == expect)
     {
         p->pos++;
+        return true;
     }
     else
     {
@@ -71,18 +97,21 @@ void eat(Parser *p, tokenType expect)
                  token_type_to_string(expect),
                  token_type_to_string(p->tokens[p->pos].type));
         uerror(buffer, p->tokens[p->pos].line, p->tokens[p->pos].column);
+        return false;
     }
 }
 
-void eat_err(Parser *p, tokenType expect, const char *error_msg)
+bool eat_err(Parser *p, tokenType expect, const char *error_msg)
 {
     if (current_token(p)->type != expect)
     {
         uerror(error_msg, current_token(p)->line, current_token(p)->column);
+        return false;
     }
     else
     {
         eat(p, expect);
+        return true;
     }
 }
 
@@ -160,14 +189,17 @@ Node **parsing_loop(Parser *p, size_t *amount)
 
 Node *parse(Parser *p)
 {
-    if (p->tokens[p->pos].type == TOKEN_BYTE)
+    if (current_token(p)->type == TOKEN_BYTE)
     {
         return parse_token_byte(p);
     }
-    else if (p->tokens[p->pos].type == TOKEN_VOID)
+    else if (current_token(p)->type == TOKEN_VOID)
     {
-
         return parse_token_void(p);
+    }
+    else if (current_token(p)->type == TOKEN_WHILE)
+    {
+        return parse_token_while(p);
     }
 
     char buffer[256];
