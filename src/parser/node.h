@@ -66,10 +66,10 @@ typedef enum
     OP_NONEXISTENT // just to make the function in expression.c happy
 } operator;
 
-/*
- * 1: () . X++ X-- -> []                L -> R
- * 2: ++X --X !X ~X *X (derefernce) &X  R -> L
- * 3: * / %                             L -> R
+/* https://en.cppreference.com/w/c/language/operator_precedence.html
+ * 1: () . X++ X-- -> []                       L -> R
+ * 2: ++X --X !X ~X *X (derefernce) &X R -> L
+ * 3: * / %                                    L -> R
  * 4: + -
  * 5: << >>
  * 6: < <= > >=

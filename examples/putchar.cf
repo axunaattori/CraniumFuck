@@ -1,0 +1,7 @@
+void main()
+{
+    putchar('a');
+    putchar('\n');
+    putchar(\x82);
+    putchar(99);
+}

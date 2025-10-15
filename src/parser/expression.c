@@ -5,7 +5,6 @@
 #include "util/error.h"
 #include <errno.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 member_type get_mem_type_enum(Token *token)

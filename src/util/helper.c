@@ -1,5 +1,6 @@
 #include "helper.h"
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 unsigned char escape(char *c)

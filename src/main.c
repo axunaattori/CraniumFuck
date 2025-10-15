@@ -8,19 +8,11 @@
 #include <stdio.h>
 #include <string.h>
 
-char source[] = "void main()\n"
-                "{\n"
-                "byte terms = 13; byte a = 0; byte b = 1; byte next;\n"
-                "\n"
-                "while(terms)\n"
-                "{\n"
-                "next = a + b;\n"
-                "putchar (next); // prints in ASCII, don't mind.\n"
-                "putchar ('\\n');\n"
-                "a = b;\n"
-                "b = next;\n"
-                "terms--;\n"
-                "}\n"
+char source[] = "void main(){\n"
+                "    putchar('b');\n"
+                "    putchar('\\n');\n"
+                "    putchar('\\x42');\n"
+                "    putchar(99);\n"
                 "}";
 
 // in case if the user isnt using cmake.
@@ -37,12 +29,10 @@ int main(int argc, char *argv[])
            VERSION_MINOR, __DATE__, __TIME__, CMAKE_COMPILER_NAME,
            CMAKE_COMPILER_VERSION);
     preprocessor(source, strlen(source));
-
     printf("Preprocessing Done!\n");
 
     size_t token_amount;
     Token *tokens = lexer(source, strlen(source), &token_amount);
-
     if (tokens == NULL)
     {
         printf("Lexer: Build failed, Returned NULL for tokens.");

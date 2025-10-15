@@ -128,7 +128,7 @@ void preprocessor(char *src, uint32_t length)
                 if (src[i] == '\n')
                 {
                     line++;
-                    column = 0;
+                    column = 1;
                 }
                 else
                 {

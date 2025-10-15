@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 #include "token.h"
 
@@ -24,12 +25,18 @@ char parse_escape(char *src, uint32_t length, uint32_t *i, int line,
         ufatal("Escape character at end of input.", line, *column);
     }
 
+    if (src[*i] == '\'' || src[*i] == '"')
+    {
+        return src[*i];
+    }
+
     if (isdigit(src[*i]))
     {
         esc[esc_size++] = src[*i];
         (*i)++;
         (*column)++;
-        while (*i < length && isdigit(src[*i]) && esc_size < 4)
+        while (*i < length && isdigit(src[*i]) && esc_size < 3 &&
+               src[*i] != '\'' && src[*i] != '"')
         {
             esc[esc_size++] = src[*i];
             (*i)++;
@@ -42,7 +49,8 @@ char parse_escape(char *src, uint32_t length, uint32_t *i, int line,
         esc[esc_size++] = src[*i];
         (*i)++;
         (*column)++;
-        while (*i < length && isxdigit(src[*i]) && esc_size < 4)
+        while (*i < length && isxdigit(src[*i]) && esc_size < 4 &&
+               src[*i] != '\'' && src[*i] != '"')
         {
             esc[esc_size++] = src[*i];
             (*i)++;
@@ -130,9 +138,10 @@ Token *lexer(char *src, uint32_t length,
     uint32_t token_count = 0;
     int column = 1;
     int line = 1;
-
+    printf("debugging ass");
     for (uint32_t i = 0; i < length; i++)
     {
+        printf("%u", i);
         char c = src[i];
 
         bool matched = false;
@@ -222,6 +231,7 @@ Token *lexer(char *src, uint32_t length,
             int startcolumn = column;
             size_t capacity = 128;
             size_t len = 0;
+            uint32_t startline = line;
 
             char *str = malloc(capacity);
             if (!str)
@@ -241,6 +251,8 @@ Token *lexer(char *src, uint32_t length,
                 }
 
                 char ch = src[i];
+                str[len++] = ch;
+                i++;
 
                 if (ch == '\\')
                 {
@@ -254,13 +266,13 @@ Token *lexer(char *src, uint32_t length,
                     if (!str)
                         ufatal("Memory error", line, column);
                 }
-                str[len++] = ch;
             }
 
             if (i >= length || src[i] != startquote)
             {
                 free(str);
-                ufatal("Lexer: Couldn't find ending quote", line, column);
+                ufatal("Lexer: Couldn't find ending quote", startline,
+                       startcolumn);
             }
             str[len] = '\0';
             if (startquote == '"')
@@ -276,7 +288,7 @@ Token *lexer(char *src, uint32_t length,
                            "it has nothing) use "
                            "arrays for "
                            "multi-character storing.",
-                           line, column);
+                           startline, startcolumn);
                 }
                 tokens[token_count++] =
                     (Token){TOKEN_CHAR, strdup(str), line, startcolumn};

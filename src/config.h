@@ -8,6 +8,7 @@
 #define ARRAYSIZE 30000
 
 // error printing limit
+// does nothing right now.
 #define ERRORLIMIT 5
 
 #endif

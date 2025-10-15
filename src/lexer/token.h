@@ -47,8 +47,8 @@ typedef enum
 
     // keywords
     TOKEN_BYTE,
-    TOKEN_PUTCHAR,
-    TOKEN_GETCHAR,
+    TOKEN_PUTCHAR, // probably should remove and make function
+    TOKEN_GETCHAR, // probably should remove and make function
     TOKEN_WHILE,
     TOKEN_VOID,
     TOKEN_RETURN,
