@@ -21,10 +21,10 @@ void print_node(Node *node, int indent)
     switch (node->type)
     {
     case NODE_VARDEC:
-        printf("VAR_DEC (%s): %s", node->var_dec.type->name,
+        printf("VAR_DEC (%s): %s\n", node->var_dec.type->name,
                node->var_dec.name);
         if (node->var_dec.init)
-            printf(" = %d", node->var_dec.init->constant);
+            print_node(node->var_dec.init, indent + 2);
         putchar('\n');
         break;
 

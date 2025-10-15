@@ -5,29 +5,8 @@
 #include "util/error.h"
 #include <errno.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
-
-/* follow this order (comment also exists in node.h)
- * https://en.cppreference.com/w/c/language/operator_precedence.html
- * 1: () . X++ X-- -> []                       L -> R
- * 2: ++X --X !X ~X *X (derefernce) &X R -> L
- * 3: * / %                                    L -> R
- * 4: + -
- * 5: << >>
- * 6: < <= > >=
- * 7: == !=
- * 8: &
- * 9: ^
- * 10: |
- * 11: &&
- * 12: ||
- * The language wont support 13 (?:) for now
- * 14: = (and those += -= if im not too lazy) R -> L
- * 15: ,    L -> R
- */
-
-// L -> R while
-// R -> L if
 
 member_type get_mem_type_enum(Token *token)
 {

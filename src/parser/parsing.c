@@ -144,12 +144,13 @@ Node *parse_token_byte(Parser *p)
     Token *start = current_token(p);
     Node *type = create_type_node("byte", start->line, start->column);
     eat(p, TOKEN_BYTE);
-    const char *identifier = p->tokens[p->pos].lexeme;
-    eat(p, TOKEN_IDENTIFIER);
 
-    if (match(p, TOKEN_OPEN_PARENTHESIS))
+    const char *identifier = p->tokens[p->pos].lexeme;
+    if (p->tokens[p->pos + 1].type ==
+        TOKEN_OPEN_PARENTHESIS) // wtf probably need a peek function
     // it just happens to be a function instead of a variable
     {
+        eat(p, TOKEN_IDENTIFIER);
         size_t size = 0;
         Node **parameters = parse_parameters(p, &size);
         Node *block = parse_block(p);
@@ -158,19 +159,7 @@ Node *parse_token_byte(Parser *p)
     }
 
     Node *init = parse_expression(p);
-
-    /*if (match(p, TOKEN_EQUALS))
-    {
-        eat(p, TOKEN_EQUALS);
-        if (match(p, TOKEN_NUMBER))
-        {
-            Token *num = current_token(p);
-            init = create_constant_node((uint8_t)atoi(num->lexeme), num->line,
-                                        num->column);
-        }
-        eat_err(p, TOKEN_NUMBER, "You need to put an number after the =");
-    }
-    eat(p, TOKEN_SEMICOLON);*/
+    eat(p, TOKEN_SEMICOLON);
 
     return create_var_dec_node(identifier, type, init, start->line,
                                start->column);
