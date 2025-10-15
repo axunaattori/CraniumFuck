@@ -9,9 +9,9 @@
 #include <string.h>
 
 char source[] = "void main(){\n"
-                "    putchar('b');\n"
+                "    putchar('n');\n"
                 "    putchar('\\n');\n"
-                "    putchar('\\x42');\n"
+                "    putchar('\\x82');\n"
                 "    putchar(99);\n"
                 "}";
 
