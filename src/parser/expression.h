@@ -23,9 +23,6 @@
  * 15: ,    L -> R
  */
 
-// L -> R while
-// R -> L if
-
 member_type get_mem_type_enum(Token *token);
 
 operator get_op_enum_postfix(Token * token);

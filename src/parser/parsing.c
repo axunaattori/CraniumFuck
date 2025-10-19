@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "parser/expression.h"
 #include "util/error.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 Node *parse_condition(Parser *p)
@@ -125,6 +126,52 @@ Node **parse_parameters(Parser *p, size_t *size)
     return params;
 }
 
+Node **parse_arguments(Parser *p, size_t *size)
+{
+    eat(p, TOKEN_OPEN_PARENTHESIS);
+
+    size_t count = 0;
+    size_t capacity = 4;
+    Node **arguments = malloc(capacity * sizeof(Node *));
+    if (match_eat(p, TOKEN_CLOSE_PARENTHESIS))
+    {
+        *size = 0;
+        return NULL;
+    }
+    do
+    {
+        Node *argument = parse_expression(p);
+
+        if (count >= capacity)
+        {
+            capacity *= 2;
+            Node **temp = realloc(arguments, capacity * sizeof(Node *));
+            if (!temp)
+            {
+                ufatal("Memory Error OOM", current_token(p)->line,
+                       current_token(p)->column);
+            }
+            arguments = temp;
+        }
+
+        arguments[count++] = argument;
+    } while (match_eat(p, TOKEN_COMMA));
+
+    if (match(p, TOKEN_EOF))
+    {
+        ufatal("You forgot ) for a function call! that is very bad!",
+               current_token(p)->line, current_token(p)->column);
+    }
+    if (!match_eat(p, TOKEN_CLOSE_PARENTHESIS))
+    {
+        uerror("missing ), but didnt reach EOF", current_token(p)->line,
+               current_token(p)->column);
+    }
+
+    *size = count;
+    return arguments;
+}
+
 Node *parse_token_void(Parser *p)
 {
     Token *start = current_token(p);
@@ -173,4 +220,13 @@ Node *parse_token_while(Parser *p)
     Node *condition = parse_condition(p);
     Node *block = parse_block(p);
     return create_while_node(condition, block, start->line, start->column);
+}
+
+Node *parse_identifier(Parser *p)
+{
+    Node *madness = parse_expression(p);
+    // i really dont have any good names so deal with it :p
+    eat(p, TOKEN_SEMICOLON);
+
+    return madness;
 }

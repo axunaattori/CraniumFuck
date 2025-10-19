@@ -2,6 +2,7 @@
 #include "lexer/token.h"
 #include "parser/node.h"
 #include "parser/parser.h"
+#include "parser/parsing.h"
 #include "util/error.h"
 #include <errno.h>
 #include <stdint.h>
@@ -419,6 +420,13 @@ Node *parse_primary(Parser *p)
     if (match_eat(p, TOKEN_IDENTIFIER))
     {
         Token *tok = previous_token(p);
+        if (match(p, TOKEN_OPEN_PARENTHESIS)) // it's a function call
+        {
+            size_t size = 0;
+            Node **arguments = parse_arguments(p, &size);
+            return create_call_node(tok->lexeme, arguments, size, tok->line,
+                                    tok->column);
+        }
 
         return create_identifier_node(tok->lexeme, tok->line, tok->column);
     }
@@ -429,6 +437,12 @@ Node *parse_primary(Parser *p)
             uerror("expected ')", expression->line, expression->column);
 
         return expression;
+    }
+    if (match_eat(p, TOKEN_CHAR))
+    {
+        Token *tok = previous_token(p);
+        uint8_t value = (uint8_t)tok->lexeme[0];
+        return create_constant_node(value, tok->line, tok->column);
     }
 
     Token *tok = current_token(p);

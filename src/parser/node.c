@@ -211,3 +211,29 @@ Node *create_type_node(const char *name, uint32_t line, uint32_t column)
         (Node){.type = NODE_TYPE, .column = column, .line = line, .name = name};
     return new_node;
 }
+
+Node *create_call_node(const char *name, Node **args, size_t size,
+                       uint32_t line, uint32_t column)
+{
+    Node *new_node = malloc(sizeof(Node));
+    if (!new_node)
+    {
+        ufatal("Failed to allocate memory for call Node", line, column);
+    };
+    char *copy = strdup(name);
+    if (!copy)
+    {
+        ufatal("Failed to copy name of the function that is being called", line,
+               column);
+    }
+
+    *new_node = (Node){.type = NODE_CALL,
+                       .column = column,
+                       .line = line,
+                       .call = {
+                           .name = name,
+                           .arguments = args,
+                           .size = size,
+                       }};
+    return new_node;
+}

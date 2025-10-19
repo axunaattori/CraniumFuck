@@ -52,8 +52,6 @@ const char *token_type_to_string(tokenType type)
 
         // keywords
         CASE(TOKEN_BYTE)
-        CASE(TOKEN_PUTCHAR)
-        CASE(TOKEN_GETCHAR)
         CASE(TOKEN_WHILE)
         CASE(TOKEN_VOID)
         CASE(TOKEN_RETURN)

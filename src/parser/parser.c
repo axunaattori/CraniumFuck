@@ -72,6 +72,22 @@ void print_node(Node *node, int indent)
     case NODE_IDENTIFIER:
         printf("NODE_IDENTIFIER: %s\n", node->name);
         break;
+    case NODE_CALL:
+        printf("NODE_CALL, calling function with name: %s, arguments:",
+               node->call.name);
+        if (node->call.arguments == NULL)
+        {
+            printf("no arguments");
+        }
+        else
+        {
+            for (size_t i = 0; i < node->call.size; i++)
+            {
+                putchar('\n');
+                print_node(node->call.arguments[i], indent + 2);
+            }
+        }
+        break;
     default:
         printf("Unknown node type\n");
         break;
@@ -200,6 +216,10 @@ Node *parse(Parser *p)
     else if (current_token(p)->type == TOKEN_WHILE)
     {
         return parse_token_while(p);
+    }
+    else if (match(p, TOKEN_IDENTIFIER))
+    {
+        return parse_identifier(p);
     }
 
     char buffer[256];

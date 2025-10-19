@@ -15,8 +15,6 @@
 char parse_escape(char *src, uint32_t length, uint32_t *i, int line,
                   int *column)
 {
-    (*i)++;
-    (*column)++;
     uint8_t esc_size = 0;
     char esc[5] = {0};
 
@@ -119,8 +117,6 @@ Token *lexer(char *src, uint32_t length,
     };
 
     Keyword keywords[] = {{"byte", TOKEN_BYTE},
-                          {"putchar", TOKEN_PUTCHAR},
-                          {"getchar", TOKEN_GETCHAR},
                           {"while", TOKEN_WHILE},
                           {"if", TOKEN_IF},
                           {"void", TOKEN_VOID},
@@ -255,6 +251,7 @@ Token *lexer(char *src, uint32_t length,
                 if (ch == '\\')
                 {
                     ch = parse_escape(src, length, &i, line, &column);
+                    str[len - 1] = ch; // We need to override it.
                 }
 
                 if (len + 1 >= capacity)

@@ -19,7 +19,8 @@ typedef enum // currently has the nodes required for the fibonacci test
     NODE_BLOCK,
     NODE_WHILE,
     NODE_FUNCTION,
-    NODE_TYPE
+    NODE_TYPE,
+    NODE_CALL
 } node_type;
 
 typedef enum
@@ -153,6 +154,13 @@ typedef struct Node
             struct Node *body;
             struct Node *return_type;
         } function;
+
+        struct
+        {
+            const char *name;
+            struct Node **arguments;
+            size_t size;
+        } call;
     };
 } Node;
 
@@ -180,5 +188,7 @@ Node *create_function_node(const char *name, Node *type, Node **arguments,
                            size_t size, Node *body, uint32_t line,
                            uint32_t column);
 Node *create_type_node(const char *name, uint32_t line, uint32_t column);
+Node *create_call_node(const char *name, Node **args, size_t size,
+                       uint32_t line, uint32_t column);
 
 #endif
