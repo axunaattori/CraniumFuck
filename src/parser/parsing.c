@@ -224,9 +224,10 @@ Node *parse_token_while(Parser *p)
 
 Node *parse_identifier(Parser *p)
 {
-    Node *madness = parse_expression(p);
-    // i really dont have any good names so deal with it :p
+    Node *expression = parse_expression(p);
+    // i really dont know what to name this but it just holds whatever
+    // parse_expression gives it
     eat(p, TOKEN_SEMICOLON);
 
-    return madness;
+    return expression;
 }
