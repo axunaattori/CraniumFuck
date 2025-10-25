@@ -8,11 +8,19 @@
 #include <stdio.h>
 #include <string.h>
 
-char source[] = "void main(){\n"
-                "    putchar('n');\n"
-                "    putchar('\\n');\n"
-                "    putchar('\\x82');\n"
-                "    putchar(99);\n"
+char source[] = "void main()\n"
+                " {\n"
+                "     byte terms = 13;\n"
+                "     byte a = 0; byte b = 1; byte next;\n"
+                "     while(terms)\n"
+                "     {\n"
+                "         next = a + b;\n"
+                "         putchar(next); // prints in ASCII, don't mind.\n"
+                "         putchar('\\n');\n"
+                "         a = b;\n"
+                "         b = next;\n"
+                "         terms--;\n"
+                "     }\n"
                 "}";
 
 // in case if the user isnt using cmake.
@@ -66,6 +74,10 @@ int main(int argc, char *argv[])
         return 1;
     }
     printf("Parsing done!\n");
+
+    printf("IR generation done!\n");
+
+    printf("BF generation done!\n");
 
     printf("Done building.");
 

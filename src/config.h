@@ -11,4 +11,8 @@
 // does nothing right now.
 #define ERRORLIMIT 5
 
+// allow the compiler to use overflow and underflows in the compiled program
+// 1 = true, 0 = false
+#define OVERFLOW 1
+
 #endif

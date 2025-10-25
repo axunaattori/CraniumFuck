@@ -28,6 +28,7 @@ bool match_eat(Parser *p, tokenType expect);
 Token *previous_token(Parser *p);
 Token *current_token(Parser *p);
 Parser *create_parser(Token *tokens, size_t token_count);
+void free_parser(Parser *p);
 Node *parse(Parser *p);
 Node **parsing_loop(Parser *p, size_t *amount);
 

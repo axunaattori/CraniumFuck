@@ -21,4 +21,4 @@ target_compile_definitions(cf PRIVATE
 
 target_include_directories(cf PRIVATE "${PROJECT_SOURCE_DIR}/src")
 
-target_compile_options(cf PRIVATE -Wall -Wextra)
+target_compile_options(cf PRIVATE -Wall -Wextra -g)
