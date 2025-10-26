@@ -1,3 +1,4 @@
+#include "argument/args.h"
 #include "config.h"
 #include "lexer/lexer.h"
 #include "lexer/token.h"
@@ -33,17 +34,29 @@ char source[] = "void main()\n"
 
 int main(int argc, char *argv[])
 {
+    process_args(argc, argv);
     printf("CF %d.%d compiled at %s %s, with %s %s\n", VERSION_MAJOR,
            VERSION_MINOR, __DATE__, __TIME__, CMAKE_COMPILER_NAME,
            CMAKE_COMPILER_VERSION);
     preprocessor(source, strlen(source));
     printf("Preprocessing Done!\n");
 
+    if (get_error_flag() == true)
+    {
+        printf("PP: Building has failed");
+        return 1;
+    }
+
     size_t token_amount;
     Token *tokens = lexer(source, strlen(source), &token_amount);
     if (tokens == NULL)
     {
         printf("Lexer: Build failed, Returned NULL for tokens.");
+        return 1;
+    }
+    else if (get_error_flag() == true)
+    {
+        printf("Lexer: Building has failed");
         return 1;
     }
 
@@ -70,12 +83,31 @@ int main(int argc, char *argv[])
 #endif
     if (get_error_flag() == true)
     {
-        printf("Building has failed");
+        printf("Parser: Building has failed");
         return 1;
     }
     printf("Parsing done!\n");
 
+    if (get_error_flag() == true)
+    {
+        printf("IR: Building has failed");
+        return 1;
+    }
+
+    printf("Semenatic Analysis done!\n");
+
+    if (get_error_flag() == true)
+    {
+        printf("BFgen: Building has failed");
+        return 1;
+    }
     printf("IR generation done!\n");
+
+    if (get_error_flag() == true)
+    {
+        printf("BFgen: Building has failed");
+        return 1;
+    }
 
     printf("BF generation done!\n");
 

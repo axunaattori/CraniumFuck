@@ -222,6 +222,34 @@ Node *parse_token_while(Parser *p)
     return create_while_node(condition, block, start->line, start->column);
 }
 
+Node *parse_token_if(Parser *p)
+{
+    Token *start = current_token(p);
+    eat(p, TOKEN_IF);
+    Node *condition = parse_condition(p);
+    Node *block = parse_block(p);
+    Node *else_node = NULL;
+    if (match_eat(p, TOKEN_ELSE))
+        else_node = parse_token_else(p);
+    return create_if_node(condition, block, else_node, start->line,
+                          start->column);
+}
+
+Node *parse_token_else(Parser *p)
+{
+    Node *return_node = parse(p);
+    return return_node;
+}
+
+Node *parse_token_return(Parser *p)
+{
+    Token *start = current_token(p);
+    eat(p, TOKEN_RETURN);
+    Node *value = parse_expression(p);
+    eat(p, TOKEN_SEMICOLON);
+    return create_return_node(value, start->line, start->column);
+}
+
 Node *parse_identifier(Parser *p)
 {
     Node *expression = parse_expression(p);

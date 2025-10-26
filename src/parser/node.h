@@ -2,7 +2,6 @@
 #define NODE_H
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/types.h>
 
 typedef enum // currently has the nodes required for the fibonacci test
 {
@@ -20,7 +19,9 @@ typedef enum // currently has the nodes required for the fibonacci test
     NODE_WHILE,
     NODE_FUNCTION,
     NODE_TYPE,
-    NODE_CALL
+    NODE_CALL,
+    NODE_IF,
+    NODE_RETURN
 } node_type;
 
 typedef enum
@@ -157,6 +158,18 @@ typedef struct Node
 
         struct
         {
+            struct Node *condition;
+            struct Node *body;
+            struct Node *else_node; // NULL for no else.
+        } if_node;
+
+        struct
+        {
+            struct Node *what_to_return;
+        } return_node;
+
+        struct
+        {
             const char *name;
             struct Node **arguments;
             size_t size;
@@ -190,5 +203,8 @@ Node *create_function_node(const char *name, Node *type, Node **arguments,
 Node *create_type_node(const char *name, uint32_t line, uint32_t column);
 Node *create_call_node(const char *name, Node **args, size_t size,
                        uint32_t line, uint32_t column);
+Node *create_if_node(Node *condition, Node *body, Node *else_node,
+                     uint32_t line, uint32_t column);
+Node *create_return_node(Node *what_to_return, uint32_t line, uint32_t column);
 
 #endif

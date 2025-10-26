@@ -237,3 +237,36 @@ Node *create_call_node(const char *name, Node **args, size_t size,
                        }};
     return new_node;
 }
+
+Node *create_if_node(Node *condition, Node *body, Node *else_node,
+                     uint32_t line, uint32_t column)
+{
+    Node *new_node = malloc(sizeof(Node));
+    if (!new_node)
+    {
+        ufatal("Failed to allocate memory for if Node", line, column);
+    };
+
+    *new_node = (Node){.type = NODE_IF,
+                       .column = column,
+                       .line = line,
+                       .if_node = {.condition = condition,
+                                   .body = body,
+                                   .else_node = else_node}};
+    return new_node;
+}
+
+Node *create_return_node(Node *what_to_return, uint32_t line, uint32_t column)
+{
+    Node *new_node = malloc(sizeof(Node));
+    if (!new_node)
+    {
+        ufatal("Failed to allocate memory for if Node", line, column);
+    };
+
+    *new_node = (Node){.type = NODE_RETURN,
+                       .column = column,
+                       .line = line,
+                       .return_node = {.what_to_return = what_to_return}};
+    return new_node;
+}

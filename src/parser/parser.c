@@ -88,6 +88,22 @@ void print_node(Node *node, int indent)
             }
         }
         break;
+    case NODE_RETURN:
+        printf("RETURN, what are we returning?:\n");
+        print_node(node->return_node.what_to_return, indent + 2);
+        break;
+    case NODE_IF:
+        printf("IF, condition:\n");
+        print_node(node->if_node.condition, indent + 2);
+        print_node(node->if_node.body, indent + 2);
+        if (node->if_node.else_node != NULL)
+        {
+            for (int i = 0; i < indent; i++)
+                putchar(' ');
+            printf("else:\n");
+            print_node(node->if_node.else_node, indent + 2);
+        }
+        break;
     default:
         printf("Unknown node type\n");
         break;
@@ -220,6 +236,18 @@ Node *parse(Parser *p)
     else if (match(p, TOKEN_IDENTIFIER))
     {
         return parse_identifier(p);
+    }
+    else if (match(p, TOKEN_IF))
+    {
+        return parse_token_if(p);
+    }
+    else if (match(p, TOKEN_RETURN))
+    {
+        return parse_token_return(p);
+    }
+    else if (match(p, TOKEN_OPEN_BRACE)) // should work, right?
+    {
+        return parse_block(p);
     }
 
     char buffer[256];

@@ -125,7 +125,8 @@ Token *lexer(char *src, uint32_t length,
                           {"continue", TOKEN_CONTINUE},
                           {"typedef", TOKEN_TYPEDEF},
                           {"struct", TOKEN_STRUCT},
-                          {"do", TOKEN_DO}};
+                          {"do", TOKEN_DO},
+                          {"else", TOKEN_ELSE}};
 
     Token *tokens = malloc((length + 1) * sizeof(Token));
     if (!tokens)
