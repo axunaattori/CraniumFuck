@@ -37,6 +37,7 @@ typedef enum
     // member access operators
     TOKEN_DOT,   // .
     TOKEN_ARROW, // ->
+    TOKEN_SCOPE, // :: kind of a shame normal c doesnt have this.
 
     // bitwise
     TOKEN_BIT_NOT,     // ~
@@ -59,6 +60,8 @@ typedef enum
 
     TOKEN_TYPEDEF,
     TOKEN_STRUCT,
+
+    TOKEN_NAMESPACE,
     // literals
     TOKEN_NUMBER,
     TOKEN_IDENTIFIER,

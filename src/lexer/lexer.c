@@ -92,6 +92,7 @@ Token *lexer(char *src, uint32_t length,
         {">>", TOKEN_RIGHT_SHIFT, 2},
         {"&&", TOKEN_LOGIC_AND, 2},
         {"||", TOKEN_LOGIC_OR, 2},
+        {"::", TOKEN_SCOPE, 2},
         {"(", TOKEN_OPEN_PARENTHESIS, 1},
         {")", TOKEN_CLOSE_PARENTHESIS, 1},
         {"{", TOKEN_OPEN_BRACE, 1},
@@ -126,7 +127,8 @@ Token *lexer(char *src, uint32_t length,
                           {"typedef", TOKEN_TYPEDEF},
                           {"struct", TOKEN_STRUCT},
                           {"do", TOKEN_DO},
-                          {"else", TOKEN_ELSE}};
+                          {"else", TOKEN_ELSE},
+                          {"namespace", TOKEN_NAMESPACE}};
 
     Token *tokens = malloc((length + 1) * sizeof(Token));
     if (!tokens)

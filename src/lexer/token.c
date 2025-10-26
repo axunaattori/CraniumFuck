@@ -42,6 +42,7 @@ const char *token_type_to_string(tokenType type)
         // member access operators
         CASE(TOKEN_DOT)   // .
         CASE(TOKEN_ARROW) // ->
+        CASE(TOKEN_SCOPE) // ::
 
         // bitwise
         CASE(TOKEN_BIT_NOT)     // ~
@@ -62,6 +63,7 @@ const char *token_type_to_string(tokenType type)
         CASE(TOKEN_CONTINUE)
         CASE(TOKEN_TYPEDEF)
         CASE(TOKEN_STRUCT)
+        CASE(TOKEN_NAMESPACE)
 
         // literals
         CASE(TOKEN_NUMBER)
